@@ -18,6 +18,7 @@
  */
 
 int g_iPlayers = 0;
+bool g_bPaused;
 
 public void _Players_CVars() {
 	gc_bMinPlayers = AutoExecConfig_CreateConVar("sm_murder_minplayers_enable", "1", "Enable \"Player Count Checks\" on round starts and only start the round when there's enough players online?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
@@ -29,10 +30,11 @@ public void _Players_OnMapStart() {
 }
 
 public void _Players_OnRoundStart() {
-	if(gc_bMinPlayers.IntValue == 1 && g_iPlayers < gc_iMinPlayers.IntValue) { // Not enough players
+	if(gc_bMinPlayers.IntValue == 1 && g_iPlayers < gc_iMinPlayers.IntValue && g_bPaused == false) { // Not enough players
 		ServerCommand("mp_pause_match");
 		ServerCommand("mp_freezetime 1");
 		ServerCommand("mp_restartgame 1");
+		g_bPaused = true;
 	}
 }
 
@@ -40,10 +42,11 @@ public void _Players_ClientConnect(int client) {
 	if(gc_bMinPlayers.IntValue == 1) {
 		g_iPlayers++;
 
-		if(g_iPlayers < gc_iMinPlayers.IntValue) { // Not enough players
+		if(g_iPlayers > gc_iMinPlayers.IntValue && g_bPaused == true) { // Enough players
 			ServerCommand("mp_unpause_match");
 			ServerCommand("mp_freezetime 0");
 			ServerCommand("mp_restartgame 1");
+			g_bPaused = false;
 		}
 	}
 }
