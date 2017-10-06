@@ -116,7 +116,7 @@ native bool IsMurderer(int client);
 * @return				true if valid
 * @error				Invalid client index, client not in game.
 */
-stock bool IsValidClient(int client, bool bAllowBots = true, bool bAllowDead = false)
+stock bool IsValidClient(int client, bool bAllowBots = false, bool bAllowDead = false)
 {
 	if(!(1 <= client <= MaxClients) || !IsClientInGame(client) || (IsFakeClient(client) && !bAllowBots) || IsClientSourceTV(client) || IsClientReplay(client) || (!bAllowDead && !IsPlayerAlive(client)))
 	{

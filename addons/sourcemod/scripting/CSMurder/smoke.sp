@@ -53,12 +53,12 @@ public void _Smoke_OnRoundEnd() {
 
 public void _Smoke_OnPlayerDeath() { // Murderer killed somebody
 	if(gc_bSmoke.IntValue == 1) {
+		g_bSmoking = false;
 		
-		if(gH_SmokeCD != null) {
+		if(gH_SmokeCD != null)
 			KillTimer(gH_SmokeCD);
-			gH_SmokeCD = CreateTimer(gc_iSmokeTimer.FloatValue, SmokeCheckTimer);
-		}
 		
+		gH_SmokeCD = CreateTimer(gc_iSmokeTimer.FloatValue, SmokeCheckTimer);
 	}
 }
 
