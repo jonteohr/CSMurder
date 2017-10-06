@@ -1,0 +1,96 @@
+"Phrases"
+{
+	"Murderer Killed"
+	{
+		"#format"	"{1:N}"
+		"en"	"{1} killed the {red}murderer{default}."
+		"sv"	"{1} dödade {red}mördaren{default}."
+	}
+	
+	"Murderer Reveal"
+	{
+		"#format"	"{1:N}"
+		"en"	"The murderer was {red}{1}{default}."
+		"sv"	"Mördaren var {red}{1}{default}."
+	}
+	
+	"Murderer Won"
+	{
+		"en"	"The murderer won!"
+		"sv"	"Mördaren vann!"
+	}
+	
+	"You are Murderer"
+	{
+		"en"	"You are the {red}murderer{default}."
+		"sv"	"Du är {red}mördaren{default}."
+	}
+	
+	"Murderer Objective"
+	{
+		"en"	"Your objective is to kill everyone without getting caught or seen!"
+		"sv"	"Ditt mål är att mörda alla utan att bli upptäckt eller sedd!"
+	}
+	
+	"You are Bystander"
+	{
+		"en"	"You are a {darkblue}bystander{default}."
+		"sv"	"Du är en {darkblue}åskådare{default}."
+	}
+	
+	"Bystander Objective"
+	{
+		"en"	"There's a murderer on the loose. Don't get yourself killed out there.."
+		"sv"	"Det är en mördare på fri fot. Försök att inte dö.."
+	}
+	
+	"You are Detective"
+	{
+		"en"	"You are a {darkblue}bystander{default} with a gun!"
+		"sv"	"Du är en {darkblue}åskådare{default} med en pistol!"
+	}
+	
+	"Detective Objective"
+	{
+		"en"	"There's a murderer on the loose. Find him and end his terror."
+		"sv"	"Det är en mördare på fri fot. Hitta honom och avsluta hans terror."
+	}
+	
+	"Player Warned RDM"
+	{
+		"#format"	"{1:d},{2:d}"
+		"en"	"You killed a person too early in the round! You have been given a warning. You have {red}{1}/{2} {default}warnings before getting kicked."
+		"sv"	"Du dödade en person för tidigt i rundan! Du har fått en varning. Du har {red}{1}/{2} {default}varningar innan du blir kickad."
+	}
+	
+	"Reveal Murderer Title"
+	{
+		"en"	"Reveal the Murderer"
+		"sv"	"Avslöja mördaren"
+	}
+	
+	"Reveal Murderer"
+	{
+		"#format"	"{1:N}"
+		"en"	"The murderer is {red}{1}{default}!"
+		"sv"	"Mördaren är {red}{1}{default}!"
+	}
+	
+	"Murderer Died Mysteriously"
+	{
+		"en"	"The murderer died mysteriously."
+		"sv"	"Mördaren dog på ett mystiskt."
+	}
+	
+	"Slain by RDM Prevention"
+	{
+		"en"	"You were slain automatically by RDM Prevention. Don't RDM.."
+		"sv"	"Du blev dödad automatiskt på grund av RDM Prevention. Döda inte på random.."
+	}
+	
+	"Client Smoking"
+	{
+		"en"	"You're evil presence is showing since you haven't {red}killed{default} someone in some time!"
+		"sv"	"Din onda anda börjar synas eftersom du inte {red}dödat{default} någon på ett tag!"
+	}
+}
