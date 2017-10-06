@@ -135,8 +135,8 @@ public void OnPluginStart() {
 	_Players_CVars();
 	_Names_CVars();
 	_Tags_CVars();
-	_Overlay_CVars();
 	_Settings_CVars();
+	_Overlay_CVars();
 	
 	AutoExecConfig_ExecuteFile(); // Execute the config
 	AutoExecConfig_CleanFile(); // Clean the config from spaces etc.

@@ -22,7 +22,7 @@ int g_iSmoke = -1;
 bool g_bSmoking;
 
 // Handles
-Handle myTimer;
+Handle gH_SmokeCD;
 
 public void _Smoke_CVars() {
 	gc_bSmoke = AutoExecConfig_CreateConVar("sm_murder_smoke", "1", "Create dark smoke around the murderer if he/she has not killed anyone in the time specified in sm_murder_smoke_timer?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
@@ -38,10 +38,10 @@ public void _Smoke_OnRoundStart() {
 	if(gc_bSmoke.IntValue == 1) {
 		g_bSmoking = false;
 		
-		if(myTimer != null)
-			KillTimer(myTimer);
+		if(gH_SmokeCD != null)
+			KillTimer(gH_SmokeCD);
 			
-		myTimer = CreateTimer(gc_iSmokeTimer.FloatValue, SmokeCheckTimer);
+		gH_SmokeCD = CreateTimer(gc_iSmokeTimer.FloatValue, SmokeCheckTimer);
 	}
 }
 
@@ -54,9 +54,9 @@ public void _Smoke_OnRoundEnd() {
 public void _Smoke_OnPlayerDeath() { // Murderer killed somebody
 	if(gc_bSmoke.IntValue == 1) {
 		
-		if(myTimer != null) {
-			KillTimer(myTimer);
-			myTimer = CreateTimer(gc_iSmokeTimer.FloatValue, SmokeCheckTimer);
+		if(gH_SmokeCD != null) {
+			KillTimer(gH_SmokeCD);
+			gH_SmokeCD = CreateTimer(gc_iSmokeTimer.FloatValue, SmokeCheckTimer);
 		}
 		
 	}
@@ -77,7 +77,7 @@ public void ExecSmoke() {
 public Action SmokeCheckTimer(Handle timer) {
 	ExecSmoke();
 	
-	delete timer;
+	gH_SmokeCD = null;
 }
 
 public Action SmokeTimer(Handle timer) { // Create smoke each x seconds on the client
