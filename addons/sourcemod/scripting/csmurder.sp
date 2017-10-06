@@ -35,9 +35,9 @@
 #pragma newdecls required
 
 // Global defs
-#define PLUGIN_VERSION "0.0.1e"
-#define SERVERTAG "Murder"
-#define UPDATE_URL "http://csmurder.net/updater/updater.txt"
+#define	PLUGIN_VERSION				"0.3.1"
+#define	SERVERTAG					"Murder"
+#define	UPDATE_URL					"http://csmurder.net/updater/updater.txt"
 
 // Integers
 int g_iWeaponCD[MAXPLAYERS + 1];
