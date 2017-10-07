@@ -1,4 +1,4 @@
-# CS-Murder [![Build Status](https://travis-ci.com/condolent/CSMurder.svg?token=Q77oXcXjM7EnRAVg3nhr&branch=master)](https://travis-ci.com/condolent/CS-Murder)
+# CS-Murder [![Build Status](https://travis-ci.org/condolent/CSMurder.svg?branch=master)](https://travis-ci.org/condolent/CSMurder)
 A CS:GO version of Mechanical Mind's GMOD Murder
 
 ## To-Do
