@@ -35,7 +35,7 @@
 #pragma newdecls required
 
 // Global defs
-#define	PLUGIN_VERSION				"Beta 0.3.2"
+#define	PLUGIN_VERSION				"Beta 0.3.3"
 #define	SERVERTAG					"Murder"
 #define	UPDATE_URL					"http://csmurder.net/updater/updater.txt"
 
