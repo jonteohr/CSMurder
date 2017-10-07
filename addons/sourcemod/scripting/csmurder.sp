@@ -84,6 +84,7 @@ Handle gF_OnDetectiveCreated;
 #include "CSMurder/names.sp"
 #include "CSMurder/smoke.sp"
 #include "CSMurder/players.sp"
+#include "CSMurder/hint.sp"
 
 public Plugin myinfo = {
 	name = "[CS:GO] Murder",
@@ -177,6 +178,7 @@ public void OnMapStart() {
 	_RDM_OnMapStart();
 	_Smoke_OnMapStart();
 	_Players_OnMapStart();
+	_Hint_OnMapStart();
 	
 	for(int i = 1; i <= MaxClients; i++) if(IsValidClient(i)) SDKHook(i, SDKHook_OnTakeDamage, OnTakeDamageAlive);
 }

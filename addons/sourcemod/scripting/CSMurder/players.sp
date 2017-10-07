@@ -64,7 +64,7 @@ public void _Players_SetSpeed(int client, char[] sItem, char[] sGun, int Knife) 
 			SetEntPropFloat(client, Prop_Data, "m_flLaggedMovementValue", 1.0);
 		}
 		if(StrEqual(sItem, "weapon_knife", false)) {
-			SetEntPropFloat(client, Prop_Data, "m_flLaggedMovementValue", 1.5);
+			SetEntPropFloat(client, Prop_Data, "m_flLaggedMovementValue", 1.15);
 		}
 	}
 }
