@@ -52,11 +52,9 @@ public Action OnTakeDamageAlive(int victim, int &attacker, int &inflictor, float
 		return Plugin_Changed;
 	}
 	
-	if(IsMurderer(attacker)) { // This is a WIP
+	if(IsMurderer(attacker)) {
 		attacker = victim;
-		damage *= 0;
-		RequestFrame(SlayOnNextFrame, victim);
-		
+		damage *= 100.0;
 		_Smoke_OnPlayerDeath();
 		
 		return Plugin_Changed;
@@ -68,7 +66,7 @@ public Action OnTakeDamageAlive(int victim, int &attacker, int &inflictor, float
 		return Plugin_Changed;
 	}
 	
-	return Plugin_Changed;
+	return Plugin_Continue;
 }
 
 public void SlayOnNextFrame(int client) {
