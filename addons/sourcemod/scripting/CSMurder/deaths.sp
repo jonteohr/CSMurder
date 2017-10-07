@@ -41,7 +41,7 @@ public Action OnTakeDamageAlive(int victim, int &attacker, int &inflictor, float
 		
 	int iWeapon = GetPlayerWeaponSlot(attacker, CS_SLOT_SECONDARY);
 	
-	if(IsDetective(attacker) && IsBystander(victim)) { // Detective killed innocent
+	if(IsDetective(attacker) && !IsMurderer(victim)) { // Detective killed innocent
 		damage *= 0;
 		CS_DropWeapon(attacker, iWeapon, true, true);
 		CooldownClient(attacker); // Prevent client from picking up weapon for the specified time

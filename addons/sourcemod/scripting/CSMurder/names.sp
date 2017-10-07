@@ -33,17 +33,30 @@ char g_sNames[][12] = {
 	"Lima"
 };
 
+char g_iNameTaken[12];
+
 public void _Names_CVars() {
 	gc_bNames = AutoExecConfig_CreateConVar("sm_murder_names", "1", "Set each players name to a random phonetic name?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 }
 
 public void _Names_OnRoundStart() {
+	for(int i = 0; i < sizeof(g_iNameTaken); i++) if(g_iNameTaken[i] != 0) g_iNameTaken[i] = 0; // Reset reservations
 	for(int i = 1; i <= MaxClients; i++) {
 		if(gc_bNames.IntValue != 1)
 			break;
 		if(!IsValidClient(i))
 			continue;
-		int iName = GetRandomInt(0, 11);
-		SetClientName(i, g_sNames[iName]);
+		SetName(i);
+	}
+}
+
+public void SetName(int client) {
+	int iName = GetRandomInt(0, 11);
+	
+	if(g_iNameTaken[iName] == 0) { // Name is not taken
+		g_iNameTaken[iName] = 1;
+		SetClientName(client, g_sNames[iName]);
+	} else { // Someone has this name, redo the cycle
+		SetName(client);
 	}
 }

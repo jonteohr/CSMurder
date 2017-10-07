@@ -36,9 +36,8 @@ public void _Overlay_OnMapStart() {
 }
 
 public void _Overlay_OnRoundStart() {
-	int iEndTime = (GetTime() + 4);
 	
-	CreateTimer(1.0, OverlayTimer, iEndTime, TIMER_REPEAT);
+	CreateTimer(4.0, OverlayTimer);
 	
 	for(int i = 1; i <= MaxClients; i++) {
 		if(!IsValidClient(i))
@@ -54,14 +53,10 @@ public void _Overlay_OnRoundStart() {
 
 
 public Action OverlayTimer(Handle timer, int iEndTime) {
-	if(GetTime() <= iEndTime) { // Check if the overlay has been shown for 4 seconds. Then destroy it!
-		for(int i = 1; i <= MaxClients; i++) {
-			if(!IsValidClient(i))
-				continue;
-			ShowRoleOverlay(i, OVERLAY_NONE); // Remove it
-		}
-		return Plugin_Stop;
+	for(int i = 1; i <= MaxClients; i++) {
+		if(!IsValidClient(i))
+			continue;
+		ShowRoleOverlay(i, OVERLAY_NONE); // Remove it
+		ShowUI(i);
 	}
-	
-	return Plugin_Continue;
 }

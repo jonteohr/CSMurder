@@ -30,6 +30,7 @@ public void _Settings_OnMapStart() {
 		SetConVarInt(FindConVar("mp_buytime"), 0, true, true);
 		SetConVarInt(FindConVar("mp_freezetime"), 0, true, true);
 		SetConVarInt(FindConVar("mp_respawn_immunitytime"), 0, true, true);
+		SetConVarInt(FindConVar("mp_randomspawn"), 1, true, true);
 		
 		// Strings
 		SetConVarString(FindConVar("sv_server_graphic2"), "materials/murder/graphic.png", true, true);

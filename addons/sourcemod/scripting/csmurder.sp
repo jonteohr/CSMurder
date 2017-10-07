@@ -35,7 +35,7 @@
 #pragma newdecls required
 
 // Global defs
-#define	PLUGIN_VERSION				"Beta 0.3.3"
+#define	PLUGIN_VERSION				"Beta 0.3.4"
 #define	SERVERTAG					"Murder"
 #define	UPDATE_URL					"http://csmurder.net/updater/updater.txt"
 
@@ -82,7 +82,6 @@ Handle gF_OnDetectiveCreated;
 #include "CSMurder/rdmprevention.sp"
 #include "CSMurder/adminmenu.sp"
 #include "CSMurder/names.sp"
-#include "CSMurder/spawns.sp"
 #include "CSMurder/smoke.sp"
 #include "CSMurder/players.sp"
 
@@ -122,6 +121,7 @@ public void OnPluginStart() {
 	HookEvent("player_death", OnPlayerDeath, EventHookMode_PostNoCopy);
 	HookEvent("round_end", OnRoundEnd);
 	HookEvent("weapon_fire", OnWeaponFire, EventHookMode_Post);
+	HookEvent("item_equip", OnItemEquip, EventHookMode_Post);
 	
 	AutoExecConfig_SetFile("murder"); // Locate the config
 	AutoExecConfig_SetCreateFile(true); // Create the config if it does not exist
@@ -183,6 +183,7 @@ public void OnMapStart() {
 
 public void OnClientPutInServer(int client) {
 	SDKHook(client, SDKHook_OnTakeDamage, OnTakeDamageAlive);
+	SDKHookEx(client, SDKHook_PostThinkPost, OnPostThinkPost);
 	_Players_ClientConnect(client);
 }
 
@@ -204,7 +205,6 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast) {
 	_Weapons_OnRoundStart(); // Hooking weapon blocks etc.
 	_Colors_OnRoundStart(); // Give players colors
 	_RDM_OnRoundStart(); // Set & Reset times
-	_Spawns_OnRoundStart(); // Set all players positions away from each other!
 	_Smoke_OnRoundStart(); // Set the timer for when smoke appears
 	_Players_OnRoundStart();
 	
@@ -245,4 +245,18 @@ public void OnWeaponFire(Event event, const char[] name, bool dontBroadcast) {
 	
 	if(StrEqual(sWeapon, sGun))
 		SetPistolMag(client, 1);
+}
+
+public void OnItemEquip(Event event, const char[] name, bool dontBroadcast) {
+	int client = GetClientOfUserId(GetEventInt(event, "userid"));
+	int iWeapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	int Knife = GetPlayerWeaponSlot(client, CS_SLOT_KNIFE);
+	
+	char sItem[64];
+	char sGun[64];
+	
+	GetConVarString(gc_sWeapon, sGun, sizeof(sGun));
+	GetWeaponClassname(iWeapon, sItem, sizeof(sItem));
+	
+	_Players_SetSpeed(client, sItem, sGun, Knife);
 }

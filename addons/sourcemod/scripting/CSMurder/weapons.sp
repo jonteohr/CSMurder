@@ -16,6 +16,17 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+ 
+#define	CSAddon_NONE				0
+#define	CSAddon_Flashbang1			(1<<0)
+#define	CSAddon_Flashbang2			(1<<1)
+#define	CSAddon_HEGrenade			(1<<2)
+#define	CSAddon_SmokeGrenade		(1<<3)
+#define	CSAddon_C4					(1<<4)
+#define	CSAddon_DefuseKit			(1<<5)
+#define	CSAddon_PrimaryWeapon		(1<<6)
+#define	CSAddon_SecondaryWeapon		(1<<7)
+#define	CSAddon_Holster				(1<<8)
 
 public void _Weapons_CVars() {
 	gc_sWeapon = AutoExecConfig_CreateConVar("sm_murder_weapon", "weapon_revolver", "The weapon the detective receives.\nMust be a pistol!", FCVAR_NOTIFY);
@@ -61,41 +72,54 @@ public void CooldownClient(int client) {
 	g_iWeaponCD[client] = (GetTime() + gc_iWeaponCD.IntValue);
 }
 
+
 ///////////////////////////
 //	DENY THROWING DECOY
 ///////////////////////////
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2]) {
 	int iWeapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	
 	char sWeapon[64];
+	char sGun[64];
 	
 	GetWeaponClassname(iWeapon, sWeapon, sizeof(sWeapon));
+	GetConVarString(gc_sWeapon, sGun, sizeof(sGun));
 	
 	if(!IsValidClient(client))
 		return Plugin_Continue;
 	
-	if(StrEqual(sWeapon, "weapon_decoy")) {
-		if(buttons & IN_ATTACK)
-			buttons &= ~IN_ATTACK;
-		if(buttons & IN_ATTACK2)
-			buttons &= ~IN_ATTACK2;
-		
-		return Plugin_Changed;
-	}
-	
-	if(buttons & IN_WEAPON2 && IsDetective(client)) { // Detective swaps to gun
-		/* TODO */
-	}
-	
-	if(buttons & IN_GRENADE1) {
-		if(IsMurderer(client)) { // Murderer hides knife
-			/* TODO */
-		}
-		
-		if(IsDetective(client)) { // Detective hides pistol
-			/* TODO */
+	if(buttons & IN_ATTACK || buttons & IN_ATTACK2) { // Trying to throw decoy
+		if(StrEqual(sWeapon, "weapon_decoy")) {
+			if(buttons & IN_ATTACK)
+				buttons &= ~IN_ATTACK;
+			if(buttons & IN_ATTACK2)
+				buttons &= ~IN_ATTACK2;
+			
+			return Plugin_Changed;
 		}
 	}
-	
 	
 	return Plugin_Continue;
+}
+
+public void _Hide_OnRoundStart() {
+	for(int i = 1; i <= MaxClients; i++) {
+		if(IsClientInGame(i)) {
+			SDKHookEx(i, SDKHook_PostThinkPost, OnPostThinkPost);
+			SetEntProp(i, Prop_Send, "m_nRenderFX", RENDERFX_NONE);
+			SetEntProp(i, Prop_Send, "m_nRenderMode", RENDER_NONE);
+		}
+	}
+	
+	int entity = MaxClients+1;
+	
+	while((entity = FindEntityByClassname(entity, "weaponworldmodel")) != -1 ) {
+		SetEntProp(entity, Prop_Send, "m_nModelIndex", 0);
+	}
+}
+
+public void OnPostThinkPost(int client) {
+	//SetEntProp(client, Prop_Send, "m_iPrimaryAddon", CSAddon_NONE);
+	SetEntProp(client, Prop_Send, "m_iSecondaryAddon", CSAddon_NONE);
+	SetEntProp(client, Prop_Send, "m_iAddonBits", CSAddon_NONE);
 }
