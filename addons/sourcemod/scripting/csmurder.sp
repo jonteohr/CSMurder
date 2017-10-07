@@ -35,7 +35,7 @@
 #pragma newdecls required
 
 // Global defs
-#define	PLUGIN_VERSION				"Beta 0.3.2"
+#define	PLUGIN_VERSION				"Beta 0.3.3"
 #define	SERVERTAG					"Murder"
 #define	UPDATE_URL					"http://csmurder.net/updater/updater.txt"
 
@@ -178,11 +178,11 @@ public void OnMapStart() {
 	_Smoke_OnMapStart();
 	_Players_OnMapStart();
 	
-	for(int i = 1; i <= MaxClients; i++) if(IsValidClient(i)) SDKHook(i, SDKHook_OnTakeDamageAlive, OnTakeDamageAlive);
+	for(int i = 1; i <= MaxClients; i++) if(IsValidClient(i)) SDKHook(i, SDKHook_OnTakeDamage, OnTakeDamageAlive);
 }
 
 public void OnClientPutInServer(int client) {
-	SDKHook(client, SDKHook_OnTakeDamageAlive, OnTakeDamageAlive);
+	SDKHook(client, SDKHook_OnTakeDamage, OnTakeDamageAlive);
 	_Players_ClientConnect(client);
 }
 
