@@ -2,7 +2,6 @@
 A CS:GO version of Mechanical Mind's GMOD Murder
 
 ## To-Do
-- Add _de_bank_ to supported map list
 - Make murderer be able to see foot patterns from other players
 - Make bystanders destroy windows by pressing E
 

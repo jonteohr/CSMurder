@@ -9,14 +9,22 @@
 #endif
 #define _CSMURDER_included
 
-#define OVERLAY_NONE 0
-#define OVERLAY_MURDERER 1
-#define OVERLAY_BYSTANDER 2
-#define OVERLAY_DETECTIVE 3
+#define	OVERLAY_NONE		0
+#define	OVERLAY_MURDERER	1
+#define	OVERLAY_BYSTANDER	2
+#define	OVERLAY_DETECTIVE	3
+#define	PINK				0
+#define	GREEN				1
+#define	BLUE				2
+#define	ORANGE				3
+#define	TEAL				4
+#define	RED					5
 
 char g_sBystanderOverlay[PLATFORM_MAX_PATH];
 char g_sDetectiveOverlay[PLATFORM_MAX_PATH];
 char g_sMurdererOverlay[PLATFORM_MAX_PATH];
+
+int g_iColor[MAXPLAYERS +1];
 
 /**
 * Called when a murderer is created
@@ -78,6 +86,34 @@ stock bool ShowRoleOverlay(int client, int overlay) {
 		ClientCommand(client, "r_screenoverlay \"%s\"", g_sMurdererOverlay);
 	
 	return true;
+}
+
+/**
+* Show a menu with name and color of the client.
+*
+* @param client			Entity client index
+* @return				true if successful
+* @error				Invalid client index, client not in game.
+*/
+stock bool ShowUI(int client) {
+	if(g_iColor[client] == PINK) {
+		
+	}
+	if(g_iColor[client] == GREEN) {
+		
+	}
+	if(g_iColor[client] == BLUE) {
+	
+	}
+	if(g_iColor[client] == ORANGE) {
+	
+	}
+	if(g_iColor[client] == TEAL) {
+	
+	}
+	if(g_iColor[client] == RED) {
+		
+	}
 }
 
 /**

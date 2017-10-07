@@ -55,3 +55,16 @@ public void _Players_ClientDisconnect(int client) {
 	if(gc_bMinPlayers.IntValue == 1 && IsValidClient(client, false, true))
 		g_iPlayers--;
 }
+
+public void _Players_SetSpeed(int client, char[] sItem, char[] sGun, int Knife) {
+	
+	/*	Murderer	*/
+	if(IsValidClient(client) && IsMurderer(client) && Knife != -1) {
+		if(StrEqual(sItem, "weapon_decoy", false)) {
+			SetEntPropFloat(client, Prop_Data, "m_flLaggedMovementValue", 1.0);
+		}
+		if(StrEqual(sItem, "weapon_knife", false)) {
+			SetEntPropFloat(client, Prop_Data, "m_flLaggedMovementValue", 1.5);
+		}
+	}
+}

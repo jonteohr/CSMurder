@@ -48,5 +48,6 @@ public void _Colors_OnRoundStart() {
 			continue;
 		int iColor = GetRandomInt(0, 5);
 		SetEntityRenderColor(i, iRed[iColor], iGreen[iColor], iBlue[iColor]);
+		g_iColor[i] = iColor;
 	}
 }
