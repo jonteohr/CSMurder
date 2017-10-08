@@ -19,6 +19,10 @@
 
 int g_iKiller;
 
+public void _Deaths_CVars() {
+	gc_iBlind = AutoExecConfig_CreateConVar("sm_murder_blinded", "8", "The time in seconds a bystander gets blind if he/she kills an innocent.", FCVAR_NOTIFY);
+}
+
 public void _Deaths_OnPlayerDeath(Event event) {
 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
 	
@@ -42,12 +46,18 @@ public Action OnTakeDamageAlive(int victim, int &attacker, int &inflictor, float
 	int iWeapon = GetPlayerWeaponSlot(attacker, CS_SLOT_SECONDARY);
 	
 	if(IsDetective(attacker) && !IsMurderer(victim)) { // Detective killed innocent
-		damage *= 0;
+		
 		CS_DropWeapon(attacker, iWeapon, true, true);
 		CooldownClient(attacker); // Prevent client from picking up weapon for the specified time
-		RequestFrame(SlayOnNextFrame, victim);
 		
 		_RDM_OnTakeDamage(victim, attacker); // Execute RDM Prevention if enabled
+		
+		CPrintToChatAll("%s %t", g_sPrefix, "Killed Innocent", attacker);
+		
+		PerformBlind(attacker);
+		
+		attacker = victim;
+		damage *= 100;
 		
 		return Plugin_Changed;
 	}
@@ -60,15 +70,23 @@ public Action OnTakeDamageAlive(int victim, int &attacker, int &inflictor, float
 		return Plugin_Changed;
 	}
 	if(IsMurderer(victim)) {
-		damage *= 0;
-		RequestFrame(SlayOnNextFrame, victim);
 		g_iKiller = attacker;
+		attacker = victim;
+		damage *= 100;
 		return Plugin_Changed;
 	}
 	
 	return Plugin_Continue;
 }
 
-public void SlayOnNextFrame(int client) {
-	ForcePlayerSuicide(client);
+public void PerformBlind(int client) {
+	if(IsValidClient(client)) {
+		ShowRoleOverlay(client, OVERLAY_BLIND);
+		CreateTimer(gc_iBlind.FloatValue, BlindTimer, client);
+	}
+}
+
+public Action BlindTimer(Handle timer, int client) {
+	if(IsValidClient(client))
+		ShowRoleOverlay(client, OVERLAY_NONE);
 }

@@ -33,6 +33,7 @@ public void _Overlay_OnMapStart() {
 	DownloadCacheOverlay(g_sMurdererOverlay);
 	DownloadCacheOverlay(g_sBystanderOverlay);
 	DownloadCacheOverlay(g_sDetectiveOverlay);
+	CreateTimer(0.5, HintTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 }
 
 public void _Overlay_OnRoundStart() {
@@ -57,6 +58,31 @@ public Action OverlayTimer(Handle timer, int iEndTime) {
 		if(!IsValidClient(i))
 			continue;
 		ShowRoleOverlay(i, OVERLAY_NONE); // Remove it
-		ShowUI(i);
+	}
+}
+
+public Action HintTimer(Handle timer) {
+	for(int i = 1; i <= MaxClients; i++) {
+		if(!IsValidClient(i))
+			continue;
+		char sName[64];
+		GetClientName(i, sName, sizeof(sName));
+		
+		char sMessage[128];
+		
+		if(g_iColor[i] == PINK)
+			Format(sMessage, sizeof(sMessage), "<font size='32' color='#ff6699'>%s</font>", sName);
+		if(g_iColor[i] == GREEN)
+			Format(sMessage, sizeof(sMessage), "<font size='32' color='#99cc00'>%s</font>", sName);
+		if(g_iColor[i] == BLUE)
+			Format(sMessage, sizeof(sMessage), "<font size='32' color='#3399ff'>%s</font>", sName);
+		if(g_iColor[i] == ORANGE)
+			Format(sMessage, sizeof(sMessage), "<font size='32' color='#ff9933'>%s</font>", sName);
+		if(g_iColor[i] == TEAL)
+			Format(sMessage, sizeof(sMessage), "<font size='32' color='#00ff99'>%s</font>", sName);
+		if(g_iColor[i] == RED)
+			Format(sMessage, sizeof(sMessage), "<font size='32' color='#ff4d4d'>%s</font>", sName);
+		
+		PrintHintText(i, "%s", sMessage);
 	}
 }

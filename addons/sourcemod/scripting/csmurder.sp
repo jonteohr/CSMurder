@@ -35,7 +35,7 @@
 #pragma newdecls required
 
 // Global defs
-#define	PLUGIN_VERSION				"Beta 0.3.4"
+#define	PLUGIN_VERSION				"Beta 0.3.5"
 #define	SERVERTAG					"Murder"
 #define	UPDATE_URL					"http://csmurder.net/updater/updater.txt"
 
@@ -64,6 +64,7 @@ ConVar gc_iRDMBan;
 ConVar gc_bNames;
 ConVar gc_bMinPlayers;
 ConVar gc_iMinPlayers;
+ConVar gc_iBlind;
 
 // Handles
 Handle gF_OnMurdererCreated;
@@ -84,7 +85,6 @@ Handle gF_OnDetectiveCreated;
 #include "CSMurder/names.sp"
 #include "CSMurder/smoke.sp"
 #include "CSMurder/players.sp"
-#include "CSMurder/hint.sp"
 
 public Plugin myinfo = {
 	name = "[CS:GO] Murder",
@@ -135,6 +135,7 @@ public void OnPluginStart() {
 	_RDM_CVars();
 	_Players_CVars();
 	_Names_CVars();
+	_Deaths_CVars();
 	_Tags_CVars();
 	_Settings_CVars();
 	_Overlay_CVars();
@@ -178,7 +179,6 @@ public void OnMapStart() {
 	_RDM_OnMapStart();
 	_Smoke_OnMapStart();
 	_Players_OnMapStart();
-	_Hint_OnMapStart();
 	
 	for(int i = 1; i <= MaxClients; i++) if(IsValidClient(i)) SDKHook(i, SDKHook_OnTakeDamage, OnTakeDamageAlive);
 }
