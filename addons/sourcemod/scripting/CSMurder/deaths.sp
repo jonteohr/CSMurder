@@ -47,7 +47,7 @@ public Action OnTakeDamageAlive(int victim, int &attacker, int &inflictor, float
 	
 	if(IsDetective(attacker) && !IsMurderer(victim)) { // Detective killed innocent
 		
-		CS_DropWeapon(attacker, iWeapon, true, true);
+		DropWeapon(attacker, iWeapon);
 		CooldownClient(attacker); // Prevent client from picking up weapon for the specified time
 		
 		_RDM_OnTakeDamage(victim, attacker); // Execute RDM Prevention if enabled

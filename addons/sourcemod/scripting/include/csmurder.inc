@@ -20,6 +20,16 @@
 #define	ORANGE				3
 #define	TEAL				4
 #define	RED					5
+#define	CSAddon_NONE				0
+#define	CSAddon_Flashbang1			(1<<0)
+#define	CSAddon_Flashbang2			(1<<1)
+#define	CSAddon_HEGrenade			(1<<2)
+#define	CSAddon_SmokeGrenade		(1<<3)
+#define	CSAddon_C4					(1<<4)
+#define	CSAddon_DefuseKit			(1<<5)
+#define	CSAddon_PrimaryWeapon		(1<<6)
+#define	CSAddon_SecondaryWeapon		(1<<7)
+#define	CSAddon_Holster				(1<<8)
 
 char g_sBystanderOverlay[PLATFORM_MAX_PATH];
 char g_sDetectiveOverlay[PLATFORM_MAX_PATH];
@@ -27,6 +37,7 @@ char g_sMurdererOverlay[PLATFORM_MAX_PATH];
 char g_sBlindOverlay[PLATFORM_MAX_PATH] = "overlays/murder/blind";
 
 int g_iColor[MAXPLAYERS +1];
+int g_iWeaponCD[MAXPLAYERS + 1];
 
 /**
 * Called when a murderer is created
@@ -161,8 +172,24 @@ stock bool DownloadCacheOverlay(char[] szMaterial = "") {
 stock int GetRandomPlayer() {
 	int[] clients = new int[MaxClients];
 	int clientCount;
-
+	
 	for (int i = 1; i <= MaxClients; i++) if (IsValidClient(i))	{
+		clients[clientCount++] = i;
+	}
+
+	return (clientCount == 0) ? -1 : clients[GetRandomInt(0, clientCount-1)];
+}
+
+/**
+* Get a random alive bystander without a cooldown
+*
+* @return				A random client index
+*/
+stock int GetRandomBystander() {
+	int[] clients = new int[MaxClients];
+	int clientCount;
+	
+	for (int i = 1; i <= MaxClients; i++) if (IsValidClient(i) && !IsMurderer(i) && g_iWeaponCD[i] < GetTime())	{
 		clients[clientCount++] = i;
 	}
 

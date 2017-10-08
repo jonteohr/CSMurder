@@ -50,6 +50,15 @@ public void SetPistolAmmo(int client, int iAmmo) {
 	}
 }
 
+public void SetPistolSpawn(int client) {
+	int iWeap = GetPlayerWeaponSlot(client, CS_SLOT_SECONDARY);
+	if(iWeap != -1) {
+		SetEntProp(iWeap, Prop_Send, "m_iPrimaryReserveAmmoCount", 1);
+		SetEntProp(iWeap, Prop_Send, "m_iSecondaryReserveAmmoCount", 0);
+		SetEntProp(iWeap, Prop_Data, "m_iClip1", 0);
+	}
+}
+
 ////////////////////////////////////////
 //				EXTERNAL
 ////////////////////////////////////////
@@ -107,8 +116,8 @@ public int Native_SetClientDetective(Handle plugin, int numParams) {
 	char sBuffer[64];
 	GetConVarString(gc_sWeapon, sBuffer, sizeof(sBuffer));
 	GivePlayerItem(client, sBuffer);
-	SetPistolMag(client, 1);
-	SetPistolAmmo(client, 0);
+	g_iDroppedWep = GetPlayerWeaponSlot(client, CS_SLOT_SECONDARY);
+	RequestFrame(SetPistolSpawn, client);
 	GivePlayerItem(client, "weapon_decoy");
 	
 	CPrintToChat(client, "");

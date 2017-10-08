@@ -40,7 +40,7 @@
 #define	UPDATE_URL					"http://csmurder.net/updater/updater.txt"
 
 // Integers
-int g_iWeaponCD[MAXPLAYERS + 1];
+int g_iDroppedWep = -1;
 
 // Strings
 char g_sPrefix[128];
@@ -65,6 +65,7 @@ ConVar gc_bNames;
 ConVar gc_bMinPlayers;
 ConVar gc_iMinPlayers;
 ConVar gc_iBlind;
+ConVar gc_iDroppedWeapon;
 
 // Handles
 Handle gF_OnMurdererCreated;
@@ -201,6 +202,7 @@ public void OnClientDisconnect(int client) {
 }
 
 public void OnRoundStart(Event event, const char[] name, bool dontBroadcast) {
+	g_iDroppedWep = -1;
 	_Names_OnRoundStart(); // Give phonetic names
 	_Roles_OnRoundStart(); // Set roles
 	_Overlay_OnRoundStart(); // Set overlay for each role
