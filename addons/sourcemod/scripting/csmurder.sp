@@ -40,7 +40,7 @@
 #define	UPDATE_URL					"http://csmurder.net/updater/updater.txt"
 
 // Integers
-int g_iDroppedWep = -1;
+int g_iPistol = -1;
 
 // Strings
 char g_sPrefix[128];
@@ -181,11 +181,11 @@ public void OnMapStart() {
 	_Smoke_OnMapStart();
 	_Players_OnMapStart();
 	
-	for(int i = 1; i <= MaxClients; i++) if(IsValidClient(i)) SDKHook(i, SDKHook_OnTakeDamage, OnTakeDamageAlive);
+	for(int i = 1; i <= MaxClients; i++) if(IsValidClient(i)) SDKHook(i, SDKHook_OnTakeDamage, OnTakeDamage);
 }
 
 public void OnClientPutInServer(int client) {
-	SDKHook(client, SDKHook_OnTakeDamage, OnTakeDamageAlive);
+	SDKHook(client, SDKHook_OnTakeDamage, OnTakeDamage);
 	SDKHookEx(client, SDKHook_PostThinkPost, OnPostThinkPost);
 	_Players_ClientConnect(client);
 }
@@ -202,7 +202,7 @@ public void OnClientDisconnect(int client) {
 }
 
 public void OnRoundStart(Event event, const char[] name, bool dontBroadcast) {
-	g_iDroppedWep = -1;
+	g_iPistol = -1;
 	_Names_OnRoundStart(); // Give phonetic names
 	_Roles_OnRoundStart(); // Set roles
 	_Overlay_OnRoundStart(); // Set overlay for each role
@@ -211,6 +211,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast) {
 	_RDM_OnRoundStart(); // Set & Reset times
 	_Smoke_OnRoundStart(); // Set the timer for when smoke appears
 	_Players_OnRoundStart();
+	_Settings_OnRoundStart();
 	
 	for(int i = 1; i <= MaxClients; i++) { // Get online players count
 		if(!IsValidClient(i))
@@ -228,10 +229,18 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast) {
 }
 
 public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast) {
+	int iReason = GetEventInt(event, "reason");
+	
 	if(g_iMurderer != -1 && IsValidClient(g_iMurderer)) {
 		CPrintToChatAll("%s %t", g_sPrefix, "Murderer Won");
 		CPrintToChatAll("%s %t", g_sPrefix, "Murderer Reveal", g_iMurderer);
 	}
+	
+	if(iReason == view_as<int>(CSRoundEnd_CTWin)) { // Time runs out (DE maps)
+		CPrintToChatAll("%s %t", g_sPrefix, "Bystanders Win");
+		CPrintToChatAll("%s %t", g_sPrefix, "Murderer Reveal", g_iMurderer);
+	}
+	
 	_Smoke_OnRoundEnd();
 }
 

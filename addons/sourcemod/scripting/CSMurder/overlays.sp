@@ -69,21 +69,21 @@ public Action HintTimer(Handle timer) {
 		char sName[64];
 		GetClientName(i, sName, sizeof(sName));
 		
-		char sMessage[128];
+		char sHex[128];
 		
 		if(g_iColor[i] == PINK)
-			Format(sMessage, sizeof(sMessage), "<font size='32' color='#ff6699'>%s</font>", sName);
+			Format(sHex, sizeof(sHex), "#ff6699");
 		if(g_iColor[i] == GREEN)
-			Format(sMessage, sizeof(sMessage), "<font size='32' color='#99cc00'>%s</font>", sName);
+			Format(sHex, sizeof(sHex), "#99cc00");
 		if(g_iColor[i] == BLUE)
-			Format(sMessage, sizeof(sMessage), "<font size='32' color='#3399ff'>%s</font>", sName);
+			Format(sHex, sizeof(sHex), "#3399ff");
 		if(g_iColor[i] == ORANGE)
-			Format(sMessage, sizeof(sMessage), "<font size='32' color='#ff9933'>%s</font>", sName);
+			Format(sHex, sizeof(sHex), "#ff9933");
 		if(g_iColor[i] == TEAL)
-			Format(sMessage, sizeof(sMessage), "<font size='32' color='#00ff99'>%s</font>", sName);
+			Format(sHex, sizeof(sHex), "#00ff99");
 		if(g_iColor[i] == RED)
-			Format(sMessage, sizeof(sMessage), "<font size='32' color='#ff4d4d'>%s</font>", sName);
+			Format(sHex, sizeof(sHex), "#ff4d4d");
 		
-		PrintHintText(i, "%s", sMessage);
+		PrintHintText(i, "<font size='34' color='%s'><b>%s</b></font>", sHex, sName);
 	}
 }

@@ -116,7 +116,7 @@ public int Native_SetClientDetective(Handle plugin, int numParams) {
 	char sBuffer[64];
 	GetConVarString(gc_sWeapon, sBuffer, sizeof(sBuffer));
 	GivePlayerItem(client, sBuffer);
-	g_iDroppedWep = GetPlayerWeaponSlot(client, CS_SLOT_SECONDARY);
+	g_iPistol = GetPlayerWeaponSlot(client, CS_SLOT_SECONDARY);
 	RequestFrame(SetPistolSpawn, client);
 	GivePlayerItem(client, "weapon_decoy");
 	

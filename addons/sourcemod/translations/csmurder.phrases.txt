@@ -100,4 +100,10 @@
 		"en"	"{1} killed an innocent bystander."
 		"sv"	"{1} dödade en oskyldig åskådare."
 	}
+	
+	"Bystanders Win"
+	{
+		"en"	"The bystanders win!"
+		"sv"	"Åskådarna vann!"
+	}
 }

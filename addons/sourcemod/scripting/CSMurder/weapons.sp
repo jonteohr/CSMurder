@@ -55,6 +55,8 @@ public Action WeaponCanUse(int client, int weapon) {
 	if(g_iWeaponCD[client] > GetTime()) // Client has a cooldown due to killing innocent
 		return Plugin_Handled;
 	
+	SetEntProp(client, Prop_Send, "m_bGlowEnabled", 0); // Disable glow
+	
 	return Plugin_Continue;
 }
 
@@ -115,16 +117,17 @@ public void OnPostThinkPost(int client) {
 
 public void DropWeapon(int client, int weapon) {
 	if(weapon != -1) {
-		g_iDroppedWep = weapon;
+		g_iPistol = weapon;
 		CS_DropWeapon(client, weapon, true, true);
 		CreateTimer(gc_iDroppedWeapon.FloatValue, WeaponRespawner);
+		SetEntProp(weapon, Prop_Send, "m_bGlowEnabled", 1);
 	}
 }
 
 public Action WeaponRespawner(Handle timer) {
 	int client = GetRandomBystander();
 	
-	RemoveEdict(g_iDroppedWep);
+	RemoveEdict(g_iPistol);
 	RequestFrame(GiveGunFrame, client);
 }
 
@@ -135,3 +138,55 @@ public void GiveGunFrame(int client) {
 	GivePlayerItem(client, sGun);
 	SetPistolSpawn(client);
 }
+
+////////////////////////////////////////
+//			MAKE GUN GLOW			  //
+////////////////////////////////////////
+public void OnEntityCreated(int entity, const char[] classname) {
+	char sGun[64]; // The created gun
+	char sAllowed[64]; // The gun in config
+	GetConVarString(gc_sWeapon, sAllowed, sizeof(sAllowed));
+	
+	GetWeaponClassname(entity, sGun, sizeof(sGun));
+	
+	if(StrEqual(sGun, sAllowed, false)) {
+		CreateTimer(0.0, makeGlowCb, EntIndexToEntRef(entity));
+	}
+}
+
+public Action makeGlowCb(Handle Timer, int entityEx) {
+    int entity = EntRefToEntIndex(entityEx);
+    float fPos[3];
+    GetEntPropVector(entity, Prop_Send, "m_vecOrigin", fPos);
+    float fAngles[3];
+    GetEntPropVector(entity, Prop_Send, "m_angRotation", fAngles);
+    int kitGlow = CreateEntityByName("prop_dynamic_glow");
+    DispatchKeyValue(kitGlow, "model", "models/props_docks/cleat_small_01.mdl");
+    DispatchKeyValue(kitGlow, "disablereceiveshadows", "1");
+    DispatchKeyValue(kitGlow, "disableshadows", "1");
+    DispatchKeyValue(kitGlow, "solid", "0");
+    DispatchKeyValue(kitGlow, "spawnflags", "256");
+    SetEntProp(kitGlow, Prop_Send, "m_CollisionGroup", 11);
+    DispatchSpawn(kitGlow);
+    SetEntPropFloat(kitGlow, Prop_Send, "m_flModelScale", 2.0);
+    TeleportEntity(kitGlow, fPos, fAngles, NULL_VECTOR);
+    SetEntProp(kitGlow, Prop_Send, "m_bShouldGlow", true, true);
+    SetEntPropFloat(kitGlow, Prop_Send, "m_flGlowMaxDist", 15000000.0);
+    SetGlowColor(kitGlow, "0 255 0");
+    AcceptEntityInput(kitGlow, "SetGlowColor");
+    SetEntPropFloat(kitGlow, Prop_Send, "m_flModelScale", 1.0);
+    SetVariantString("!activator");
+    AcceptEntityInput(kitGlow, "SetParent", entity);
+} 
+
+stock void SetGlowColor(int entity, const char[] color)
+{
+    char colorbuffers[3][4];
+    ExplodeString(color, " ", colorbuffers, sizeof(colorbuffers), sizeof(colorbuffers[]));
+    int colors[4];
+    for (int i = 0; i < 3; i++)
+    colors[i] = StringToInt(colorbuffers[i]);
+    colors[3] = 255;
+    SetVariantColor(colors);
+    AcceptEntityInput(entity, "SetGlowColor");
+}  
