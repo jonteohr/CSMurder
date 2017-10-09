@@ -55,8 +55,6 @@ public Action WeaponCanUse(int client, int weapon) {
 	if(g_iWeaponCD[client] > GetTime()) // Client has a cooldown due to killing innocent
 		return Plugin_Handled;
 	
-	SetEntProp(client, Prop_Send, "m_bGlowEnabled", 0); // Disable glow
-	
 	return Plugin_Continue;
 }
 
@@ -120,7 +118,6 @@ public void DropWeapon(int client, int weapon) {
 		g_iPistol = weapon;
 		CS_DropWeapon(client, weapon, true, true);
 		CreateTimer(gc_iDroppedWeapon.FloatValue, WeaponRespawner);
-		SetEntProp(weapon, Prop_Send, "m_bGlowEnabled", 1);
 	}
 }
 
