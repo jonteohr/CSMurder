@@ -39,6 +39,33 @@
 #define	SERVERTAG					"Murder"
 #define	UPDATE_URL					"http://csmurder.net/updater/updater.txt"
 
+enum entities {
+	char ent_name[32],
+	char ent_shortname[32],
+	char ent_color[32],
+	char ent_buttonclass[32],
+	char ent_filtername[32],
+	bool ent_hasfiltername,
+	bool ent_blockpickup,
+	bool ent_allowtransfer,
+	bool ent_forcedrop,
+	bool ent_chat,
+	bool ent_hud,
+	ent_hammerid,
+	ent_weaponid,
+	ent_buttonid,
+	ent_ownerid,
+	ent_mode, // 0 = No button, 1 = Spam protection only, 2 = Cooldowns, 3 = Limited uses, 4 = Limited uses with cooldowns, 5 = Cooldowns after multiple uses.
+	ent_uses,
+	ent_maxuses,
+	ent_cooldown,
+	ent_cooldowntime,
+	ent_dummy_weapon
+}
+ 
+int entArray[512][entities];
+int entArraySize = 512;
+
 // Integers
 int g_iPistol = -1;
 
@@ -159,6 +186,13 @@ public void OnPluginStart() {
 		Updater_AddPlugin(UPDATE_URL);
 		Updater_ForceUpdate();
 	}
+	RegConsoleCmd("sm_g", cmd_glow);
+}
+
+public Action cmd_glow(int client, int args) {
+	
+	
+	return Plugin_Handled;
 }
 
 /* More updater stuff */
@@ -229,15 +263,17 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast) {
 }
 
 public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast) {
-	int iReason = GetEventInt(event, "reason");
+	int iBystanders = 0;
 	
-	if(g_iMurderer != -1 && IsValidClient(g_iMurderer)) {
-		CPrintToChatAll("%s %t", g_sPrefix, "Murderer Won");
+	for(int i = 1; i <= MaxClients; i++) if(IsValidClient(i) && !IsMurderer(i)) iBystanders++;
+	
+	if(g_iMurderer != -1 && iBystanders > 0) { // Time runs out
+		CPrintToChatAll("%s %t", g_sPrefix, "Bystanders Win");
 		CPrintToChatAll("%s %t", g_sPrefix, "Murderer Reveal", g_iMurderer);
 	}
 	
-	if(iReason == view_as<int>(CSRoundEnd_CTWin)) { // Time runs out (DE maps)
-		CPrintToChatAll("%s %t", g_sPrefix, "Bystanders Win");
+	if(g_iMurderer != -1 && IsValidClient(g_iMurderer) && iBystanders <= 0) {
+		CPrintToChatAll("%s %t", g_sPrefix, "Murderer Won");
 		CPrintToChatAll("%s %t", g_sPrefix, "Murderer Reveal", g_iMurderer);
 	}
 	
