@@ -93,4 +93,17 @@
 		"en"	"You're evil presence is showing since you haven't {red}killed{default} someone in some time!"
 		"sv"	"Din onda anda börjar synas eftersom du inte {red}dödat{default} någon på ett tag!"
 	}
+	
+	"Killed Innocent"
+	{
+		"#format"	"{1:N}"
+		"en"	"{1} killed an innocent bystander."
+		"sv"	"{1} dödade en oskyldig åskådare."
+	}
+	
+	"Bystanders Win"
+	{
+		"en"	"The bystanders win!"
+		"sv"	"Åskådarna vann!"
+	}
 }

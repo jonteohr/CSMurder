@@ -31,8 +31,26 @@ public void _Settings_OnMapStart() {
 		SetConVarInt(FindConVar("mp_freezetime"), 0, true, true);
 		SetConVarInt(FindConVar("mp_respawn_immunitytime"), 0, true, true);
 		SetConVarInt(FindConVar("mp_randomspawn"), 1, true, true);
+		SetConVarInt(FindConVar("mp_weapons_glow_on_ground"), 1, true, true);
+		SetConVarString(FindConVar("mp_t_default_melee"), "", true, true);
+		SetConVarString(FindConVar("mp_t_default_secondary"), "", true, true);
+		SetConVarString(FindConVar("mp_ct_default_melee"), "", true, true);
+		SetConVarString(FindConVar("mp_ct_default_secondary"), "", true, true);
 		
 		// Strings
 		SetConVarString(FindConVar("sv_server_graphic2"), "materials/murder/graphic.png", true, true);
+	}
+}
+
+public void _Settings_OnRoundStart() {
+	char sClass[64];
+	
+	for(int i = 0; i <= GetMaxEntities(); i++) { // Remove hostages and bombs
+		if(IsValidEntity(i) && IsValidEdict(i)) {
+		
+			GetEdictClassname(i, sClass, sizeof(sClass));
+			if(StrContains("hostage_entity", sClass, false) != -1)
+				RemoveEdict(i);
+		}
 	}
 }

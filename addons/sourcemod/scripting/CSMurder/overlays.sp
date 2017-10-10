@@ -33,6 +33,7 @@ public void _Overlay_OnMapStart() {
 	DownloadCacheOverlay(g_sMurdererOverlay);
 	DownloadCacheOverlay(g_sBystanderOverlay);
 	DownloadCacheOverlay(g_sDetectiveOverlay);
+	CreateTimer(0.5, HintTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 }
 
 public void _Overlay_OnRoundStart() {
@@ -57,6 +58,31 @@ public Action OverlayTimer(Handle timer, int iEndTime) {
 		if(!IsValidClient(i))
 			continue;
 		ShowRoleOverlay(i, OVERLAY_NONE); // Remove it
-		ShowUI(i);
+	}
+}
+
+public Action HintTimer(Handle timer) {
+	for(int i = 1; i <= MaxClients; i++) {
+		if(!IsValidClient(i))
+			continue;
+		char sName[64];
+		GetClientName(i, sName, sizeof(sName));
+		
+		char sHex[128];
+		
+		if(g_iColor[i] == PINK)
+			Format(sHex, sizeof(sHex), "#ff6699");
+		if(g_iColor[i] == GREEN)
+			Format(sHex, sizeof(sHex), "#99cc00");
+		if(g_iColor[i] == BLUE)
+			Format(sHex, sizeof(sHex), "#3399ff");
+		if(g_iColor[i] == ORANGE)
+			Format(sHex, sizeof(sHex), "#ff9933");
+		if(g_iColor[i] == TEAL)
+			Format(sHex, sizeof(sHex), "#00ff99");
+		if(g_iColor[i] == RED)
+			Format(sHex, sizeof(sHex), "#ff4d4d");
+		
+		PrintHintText(i, "<font size='34' color='%s'><b>%s</b></font>", sHex, sName);
 	}
 }

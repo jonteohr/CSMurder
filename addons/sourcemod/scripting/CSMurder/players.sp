@@ -21,7 +21,7 @@ int g_iPlayers = 0;
 bool g_bPaused;
 
 public void _Players_CVars() {
-	gc_bMinPlayers = AutoExecConfig_CreateConVar("sm_murder_minplayers_enable", "1", "Enable \"Player Count Checks\" on round starts and only start the round when there's enough players online?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	gc_bMinPlayers = AutoExecConfig_CreateConVar("sm_murder_minplayers_enable", "0", "Enable \"Player Count Checks\" on round starts and only start the round when there's enough players online?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gc_iMinPlayers = AutoExecConfig_CreateConVar("sm_murder_minplayers", "3", "The actual minimum amount of online players needed to start the round.", FCVAR_NOTIFY, true, 1.0);
 }
 
@@ -64,7 +64,7 @@ public void _Players_SetSpeed(int client, char[] sItem, char[] sGun, int Knife) 
 			SetEntPropFloat(client, Prop_Data, "m_flLaggedMovementValue", 1.0);
 		}
 		if(StrEqual(sItem, "weapon_knife", false)) {
-			SetEntPropFloat(client, Prop_Data, "m_flLaggedMovementValue", 1.5);
+			SetEntPropFloat(client, Prop_Data, "m_flLaggedMovementValue", 1.15);
 		}
 	}
 }

@@ -35,12 +35,12 @@
 #pragma newdecls required
 
 // Global defs
-#define	PLUGIN_VERSION				"Beta 0.3.4"
+#define	PLUGIN_VERSION				"Beta 0.3.5"
 #define	SERVERTAG					"Murder"
 #define	UPDATE_URL					"http://csmurder.net/updater/updater.txt"
 
 // Integers
-int g_iWeaponCD[MAXPLAYERS + 1];
+int g_iPistol = -1;
 
 // Strings
 char g_sPrefix[128];
@@ -64,6 +64,8 @@ ConVar gc_iRDMBan;
 ConVar gc_bNames;
 ConVar gc_bMinPlayers;
 ConVar gc_iMinPlayers;
+ConVar gc_iBlind;
+ConVar gc_iDroppedWeapon;
 
 // Handles
 Handle gF_OnMurdererCreated;
@@ -134,6 +136,7 @@ public void OnPluginStart() {
 	_RDM_CVars();
 	_Players_CVars();
 	_Names_CVars();
+	_Deaths_CVars();
 	_Tags_CVars();
 	_Settings_CVars();
 	_Overlay_CVars();
@@ -156,6 +159,9 @@ public void OnPluginStart() {
 		Updater_AddPlugin(UPDATE_URL);
 		Updater_ForceUpdate();
 	}
+	
+	g_FadeUserMsgId = GetUserMessageId("Fade");
+	
 }
 
 /* More updater stuff */
@@ -178,11 +184,11 @@ public void OnMapStart() {
 	_Smoke_OnMapStart();
 	_Players_OnMapStart();
 	
-	for(int i = 1; i <= MaxClients; i++) if(IsValidClient(i)) SDKHook(i, SDKHook_OnTakeDamage, OnTakeDamageAlive);
+	for(int i = 1; i <= MaxClients; i++) if(IsValidClient(i)) SDKHook(i, SDKHook_OnTakeDamage, OnTakeDamage);
 }
 
 public void OnClientPutInServer(int client) {
-	SDKHook(client, SDKHook_OnTakeDamage, OnTakeDamageAlive);
+	SDKHook(client, SDKHook_OnTakeDamage, OnTakeDamage);
 	SDKHookEx(client, SDKHook_PostThinkPost, OnPostThinkPost);
 	_Players_ClientConnect(client);
 }
@@ -199,6 +205,7 @@ public void OnClientDisconnect(int client) {
 }
 
 public void OnRoundStart(Event event, const char[] name, bool dontBroadcast) {
+	g_iPistol = -1;
 	_Names_OnRoundStart(); // Give phonetic names
 	_Roles_OnRoundStart(); // Set roles
 	_Overlay_OnRoundStart(); // Set overlay for each role
@@ -207,6 +214,8 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast) {
 	_RDM_OnRoundStart(); // Set & Reset times
 	_Smoke_OnRoundStart(); // Set the timer for when smoke appears
 	_Players_OnRoundStart();
+	_Settings_OnRoundStart();
+	_Deaths_OnRoundStart();
 	
 	for(int i = 1; i <= MaxClients; i++) { // Get online players count
 		if(!IsValidClient(i))
@@ -224,10 +233,20 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast) {
 }
 
 public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast) {
-	if(g_iMurderer != -1 && IsValidClient(g_iMurderer)) {
+	int iBystanders = 0;
+	
+	for(int i = 1; i <= MaxClients; i++) if(IsValidClient(i) && !IsMurderer(i)) iBystanders++;
+	
+	if(g_iMurderer != -1 && iBystanders > 0) { // Time runs out
+		CPrintToChatAll("%s %t", g_sPrefix, "Bystanders Win");
+		CPrintToChatAll("%s %t", g_sPrefix, "Murderer Reveal", g_iMurderer);
+	}
+	
+	if(g_iMurderer != -1 && IsValidClient(g_iMurderer) && iBystanders <= 0) {
 		CPrintToChatAll("%s %t", g_sPrefix, "Murderer Won");
 		CPrintToChatAll("%s %t", g_sPrefix, "Murderer Reveal", g_iMurderer);
 	}
+	
 	_Smoke_OnRoundEnd();
 }
 

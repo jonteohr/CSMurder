@@ -16,21 +16,11 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-#define	CSAddon_NONE				0
-#define	CSAddon_Flashbang1			(1<<0)
-#define	CSAddon_Flashbang2			(1<<1)
-#define	CSAddon_HEGrenade			(1<<2)
-#define	CSAddon_SmokeGrenade		(1<<3)
-#define	CSAddon_C4					(1<<4)
-#define	CSAddon_DefuseKit			(1<<5)
-#define	CSAddon_PrimaryWeapon		(1<<6)
-#define	CSAddon_SecondaryWeapon		(1<<7)
-#define	CSAddon_Holster				(1<<8)
 
 public void _Weapons_CVars() {
 	gc_sWeapon = AutoExecConfig_CreateConVar("sm_murder_weapon", "weapon_revolver", "The weapon the detective receives.\nMust be a pistol!", FCVAR_NOTIFY);
 	gc_iWeaponCD = AutoExecConfig_CreateConVar("sm_murder_cooldown", "15", "The amount of seconds a bystander will be prevented from picking up weapon(s) after killing an innocent.", FCVAR_NOTIFY, true, 1.0);
+	gc_iDroppedWeapon = AutoExecConfig_CreateConVar("sm_murder_respawnweapon", "30", "The amount of seconds it takes for the dropped weapon to respawn to a random player", FCVAR_NOTIFY);
 }
 
 public void _Weapons_OnRoundStart() {
@@ -71,7 +61,6 @@ public Action WeaponCanUse(int client, int weapon) {
 public void CooldownClient(int client) {
 	g_iWeaponCD[client] = (GetTime() + gc_iWeaponCD.IntValue);
 }
-
 
 ///////////////////////////
 //	DENY THROWING DECOY
@@ -122,4 +111,28 @@ public void OnPostThinkPost(int client) {
 	//SetEntProp(client, Prop_Send, "m_iPrimaryAddon", CSAddon_NONE);
 	SetEntProp(client, Prop_Send, "m_iSecondaryAddon", CSAddon_NONE);
 	SetEntProp(client, Prop_Send, "m_iAddonBits", CSAddon_NONE);
+}
+
+public void DropWeapon(int client, int weapon) {
+	if(weapon != -1) {
+		g_iPistol = weapon;
+		CS_DropWeapon(client, weapon, true, true);
+		CreateTimer(gc_iDroppedWeapon.FloatValue, WeaponRespawner);
+	}
+}
+
+public Action WeaponRespawner(Handle timer) {
+	int client = GetRandomBystander();
+	
+	RemoveEdict(g_iPistol);
+	RequestFrame(GiveGunFrame, client);
+}
+
+public void GiveGunFrame(int client) {
+	char sGun[64];
+	GetConVarString(gc_sWeapon, sGun, sizeof(sGun));
+	
+	GivePlayerItem(client, sGun);
+	g_iPistol = GetPlayerWeaponSlot(client, CS_SLOT_SECONDARY);
+	SetPistolSpawn(client);
 }
