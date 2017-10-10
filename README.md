@@ -9,4 +9,3 @@ A CS:GO version of Mechanical Mind's GMOD Murder
 
 ## Known issues
 - Bystanders very rarerly spawn without a decoy
-- Detectives sometimes spawns with 8/8 ammo
