@@ -31,6 +31,9 @@ public void _Weapons_OnRoundStart() {
 	}
 	
 	for(int i = 0; i < sizeof(g_iWeaponCD); i++) g_iWeaponCD[i] = 0; // Reset weapon cooldowns
+	
+	if(gH_WeapRespawn != null)
+		KillTimer(gH_WeapRespawn);
 }
 
 public Action WeaponCanUse(int client, int weapon) {
@@ -113,11 +116,30 @@ public void OnPostThinkPost(int client) {
 	SetEntProp(client, Prop_Send, "m_iAddonBits", CSAddon_NONE);
 }
 
+public Action OnWeaponDrop(int client, int weapon) {
+	char sBuffer[64];
+	char sGun[64];
+	
+	GetWeaponClassname(weapon, sBuffer, sizeof(sBuffer));
+	GetConVarString(gc_sWeapon, sGun, sizeof(sGun));
+	
+	if(StrEqual(sBuffer, sGun, false)) { // initialize respawn
+		if(gH_WeapRespawn != null)
+			KillTimer(gH_WeapRespawn);
+		
+		gH_WeapRespawn = CreateTimer(gc_iDroppedWeapon.FloatValue, WeaponRespawner);
+	}
+}
+
 public void DropWeapon(int client, int weapon) {
 	if(weapon != -1) {
 		g_iPistol = weapon;
 		CS_DropWeapon(client, weapon, true, true);
-		CreateTimer(gc_iDroppedWeapon.FloatValue, WeaponRespawner);
+		
+		if(gH_WeapRespawn != null)
+			KillTimer(gH_WeapRespawn);
+			
+		gH_WeapRespawn = CreateTimer(gc_iDroppedWeapon.FloatValue, WeaponRespawner);
 	}
 }
 
@@ -126,6 +148,8 @@ public Action WeaponRespawner(Handle timer) {
 	
 	RemoveEdict(g_iPistol);
 	RequestFrame(GiveGunFrame, client);
+	
+	gH_WeapRespawn = null;
 }
 
 public void GiveGunFrame(int client) {
@@ -136,3 +160,4 @@ public void GiveGunFrame(int client) {
 	g_iPistol = GetPlayerWeaponSlot(client, CS_SLOT_SECONDARY);
 	SetPistolSpawn(client);
 }
+
