@@ -5,7 +5,7 @@ A CS:GO version of Mechanical Mind's GMOD Murder
 - Make murderer be able to see foot patterns from other players
 - Make bystanders destroy windows by pressing E
 - ~Make the gun respawn to a random player after x minute(s) of being dropped~
-- Make the gun glow if dropped
+- ~Make the gun glow if dropped~
 
 ## Known issues
 - Bystanders very rarerly spawn without a decoy
