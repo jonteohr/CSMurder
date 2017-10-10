@@ -159,13 +159,9 @@ public void OnPluginStart() {
 		Updater_AddPlugin(UPDATE_URL);
 		Updater_ForceUpdate();
 	}
-	RegConsoleCmd("sm_g", cmd_glow);
-}
-
-public Action cmd_glow(int client, int args) {
 	
+	g_FadeUserMsgId = GetUserMessageId("Fade");
 	
-	return Plugin_Handled;
 }
 
 /* More updater stuff */
@@ -219,6 +215,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast) {
 	_Smoke_OnRoundStart(); // Set the timer for when smoke appears
 	_Players_OnRoundStart();
 	_Settings_OnRoundStart();
+	_Deaths_OnRoundStart();
 	
 	for(int i = 1; i <= MaxClients; i++) { // Get online players count
 		if(!IsValidClient(i))

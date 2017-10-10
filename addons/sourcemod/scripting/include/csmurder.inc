@@ -39,6 +39,8 @@ char g_sBlindOverlay[PLATFORM_MAX_PATH] = "overlays/murder/blind";
 int g_iColor[MAXPLAYERS +1];
 int g_iWeaponCD[MAXPLAYERS + 1];
 
+UserMsg g_FadeUserMsgId;
+
 /**
 * Called when a murderer is created
 *
@@ -197,17 +199,48 @@ stock int GetRandomBystander() {
 }
 
 /**
-* Kills timer
+* Blinds a player
 *
-* @param timer			Handle to the timer
-* @return				true if successful
-* @error				Invalid timer handle
+* @param target			Client entity index of target
+* @param amount			Amount (0-255)
 */
-stock bool ClearTimer(Timer &timer) {
-	if(timer != null) {
-		delete timer;
-		timer = null;
-		return true;
+stock void PerformBlind(int target, int amount) {
+	if(IsClientInGame(target)) {
+		int targets[2];
+		targets[0] = target;
+		
+		int color[4] = { 0, 0, 0, 0 };
+		color[0] = 0;
+		color[1] = 0;
+		color[2] = 0;
+		color[3] = amount;
+		
+		int flags;
+		if (amount == 0)
+			flags = (0x0001 | 0x0010);
+		else
+			flags = (0x0002 | 0x0008);
+
+		Handle message = StartMessageEx(g_FadeUserMsgId, targets, 1);
+		
+		if (GetUserMessageType() == UM_Protobuf)
+		{
+			PbSetInt(message, "duration", 768);
+			PbSetInt(message, "hold_time", 1536);
+			PbSetInt(message, "flags", flags);
+			PbSetColor(message, "clr", color);
+		}
+		else
+		{
+			BfWriteShort(message, 768);
+			BfWriteShort(message, 1536);
+			BfWriteShort(message, flags);
+			BfWriteByte(message, color[0]);
+			BfWriteByte(message, color[1]);
+			BfWriteByte(message, color[2]);
+			BfWriteByte(message, color[3]);
+		}
+
+		EndMessage();
 	}
-	return false;
 }
