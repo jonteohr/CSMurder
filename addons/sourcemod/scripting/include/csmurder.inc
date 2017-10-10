@@ -13,7 +13,6 @@
 #define	OVERLAY_MURDERER	1
 #define	OVERLAY_BYSTANDER	2
 #define	OVERLAY_DETECTIVE	3
-#define	OVERLAY_BLIND		4
 #define	PINK				0
 #define	GREEN				1
 #define	BLUE				2
@@ -34,7 +33,6 @@
 char g_sBystanderOverlay[PLATFORM_MAX_PATH];
 char g_sDetectiveOverlay[PLATFORM_MAX_PATH];
 char g_sMurdererOverlay[PLATFORM_MAX_PATH];
-char g_sBlindOverlay[PLATFORM_MAX_PATH] = "overlays/murder/blind";
 
 int g_iColor[MAXPLAYERS +1];
 int g_iWeaponCD[MAXPLAYERS + 1];
@@ -99,8 +97,6 @@ stock bool ShowRoleOverlay(int client, int overlay) {
 		ClientCommand(client, "r_screenoverlay \"%s\"", g_sDetectiveOverlay);
 	if(overlay == OVERLAY_MURDERER)
 		ClientCommand(client, "r_screenoverlay \"%s\"", g_sMurdererOverlay);
-	if(overlay == OVERLAY_BLIND)
-		ClientCommand(client, "r_screenoverlay \"%s\"", g_sBlindOverlay);
 	
 	return true;
 }

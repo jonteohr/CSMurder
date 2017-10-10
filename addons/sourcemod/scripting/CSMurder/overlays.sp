@@ -33,7 +33,6 @@ public void _Overlay_OnMapStart() {
 	DownloadCacheOverlay(g_sMurdererOverlay);
 	DownloadCacheOverlay(g_sBystanderOverlay);
 	DownloadCacheOverlay(g_sDetectiveOverlay);
-	DownloadCacheOverlay(g_sBlindOverlay);
 	CreateTimer(0.5, HintTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 }
 
