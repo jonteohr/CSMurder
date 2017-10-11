@@ -35,7 +35,7 @@
 #pragma newdecls required
 
 // Global defs
-#define	PLUGIN_VERSION				"Beta 0.3.5"
+#define	PLUGIN_VERSION				"Beta 0.3.5a"
 #define	SERVERTAG					"Murder"
 #define	UPDATE_URL					"http://csmurder.net/updater/updater.txt"
 
@@ -70,6 +70,7 @@ ConVar gc_iDroppedWeapon;
 // Handles
 Handle gF_OnMurdererCreated;
 Handle gF_OnDetectiveCreated;
+Handle gH_WeapRespawn;
 
 // Modules
 #include "CSMurder/roles.sp"
@@ -184,7 +185,13 @@ public void OnMapStart() {
 	_Smoke_OnMapStart();
 	_Players_OnMapStart();
 	
-	for(int i = 1; i <= MaxClients; i++) if(IsValidClient(i)) SDKHook(i, SDKHook_OnTakeDamage, OnTakeDamage);
+	for(int i = 1; i <= MaxClients; i++) {
+		if(!IsValidClient(i))
+			continue;
+			
+		SDKHook(i, SDKHook_OnTakeDamage, OnTakeDamage);
+		SDKHook(i, SDKHook_WeaponDrop, OnWeaponDrop);
+	}
 }
 
 public void OnClientPutInServer(int client) {
@@ -237,7 +244,7 @@ public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast) {
 	
 	for(int i = 1; i <= MaxClients; i++) if(IsValidClient(i) && !IsMurderer(i)) iBystanders++;
 	
-	if(g_iMurderer != -1 && iBystanders > 0) { // Time runs out
+	if(g_iMurderer != -1 && IsValidClient(g_iMurderer) && iBystanders > 0) { // Time runs out
 		CPrintToChatAll("%s %t", g_sPrefix, "Bystanders Win");
 		CPrintToChatAll("%s %t", g_sPrefix, "Murderer Reveal", g_iMurderer);
 	}
@@ -269,6 +276,7 @@ public void OnWeaponFire(Event event, const char[] name, bool dontBroadcast) {
 public void OnItemEquip(Event event, const char[] name, bool dontBroadcast) {
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 	int iWeapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	int iPistol = GetPlayerWeaponSlot(client, CS_SLOT_SECONDARY);
 	int Knife = GetPlayerWeaponSlot(client, CS_SLOT_KNIFE);
 	
 	char sItem[64];
@@ -276,6 +284,18 @@ public void OnItemEquip(Event event, const char[] name, bool dontBroadcast) {
 	
 	GetConVarString(gc_sWeapon, sGun, sizeof(sGun));
 	GetWeaponClassname(iWeapon, sItem, sizeof(sItem));
+	
+	if(IsValidClient(client)) {
+		if(iPistol != -1) {
+			char sPistol[64];
+			GetWeaponClassname(iPistol, sPistol, sizeof(sPistol));
+			
+			if(StrEqual(sPistol, sGun, false)) {
+				if(gH_WeapRespawn != null)
+					delete gH_WeapRespawn;
+			}
+		}
+	}
 	
 	_Players_SetSpeed(client, sItem, sGun, Knife);
 }

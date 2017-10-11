@@ -103,7 +103,7 @@
 	
 	"Bystanders Win"
 	{
-		"en"	"The bystanders win!"
-		"sv"	"Åskådarna vann!"
+		"en"	"The {darkblue}bystanders{default} win!"
+		"sv"	"{darkblue}Åskådarna{default} vann!"
 	}
 }

@@ -1,3 +1,7 @@
+## 0.3.5a
+ - Fixed issues that made the previous version completely unplayable.
+ - Improved the API
+
 ## 0.3.5
  - Added hint message to show name and color
  - Bystanders killing innocents now gets blinded for 8 seconds
