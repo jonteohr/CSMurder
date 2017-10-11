@@ -181,14 +181,23 @@ stock int GetRandomPlayer() {
 /**
 * Get a random alive bystander without a cooldown
 *
+* @param Bypass			Set to true to bypass weapon cooldown
 * @return				A random client index
 */
-stock int GetRandomBystander() {
+stock int GetRandomBystander(bool Bypass = false) {
 	int[] clients = new int[MaxClients];
 	int clientCount;
 	
-	for (int i = 1; i <= MaxClients; i++) if (IsValidClient(i) && !IsMurderer(i) && g_iWeaponCD[i] < GetTime())	{
-		clients[clientCount++] = i;
+	for (int i = 1; i <= MaxClients; i++) {
+		if(Bypass == false) {
+			if(IsValidClient(i) && !IsMurderer(i) && g_iWeaponCD[i] < GetTime()) {
+				clients[clientCount++] = i;
+			}
+		} else {
+			if(IsValidClient(i) && !IsMurderer(i)) {
+				clients[clientCount++] = i;
+			}
+		}
 	}
 
 	return (clientCount == 0) ? -1 : clients[GetRandomInt(0, clientCount-1)];
