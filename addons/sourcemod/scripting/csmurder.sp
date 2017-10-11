@@ -285,13 +285,15 @@ public void OnItemEquip(Event event, const char[] name, bool dontBroadcast) {
 	GetConVarString(gc_sWeapon, sGun, sizeof(sGun));
 	GetWeaponClassname(iWeapon, sItem, sizeof(sItem));
 	
-	if(iPistol != -1) {
-		char sPistol[64];
-		GetWeaponClassname(iPistol, sPistol, sizeof(sPistol));
-		
-		if(StrEqual(sPistol, sGun, false)) {
-			if(gH_WeapRespawn != null)
-				KillTimer(gH_WeapRespawn);
+	if(IsValidClient(client)) {
+		if(iPistol != -1) {
+			char sPistol[64];
+			GetWeaponClassname(iPistol, sPistol, sizeof(sPistol));
+			
+			if(StrEqual(sPistol, sGun, false)) {
+				if(gH_WeapRespawn != null)
+					delete gH_WeapRespawn;
+			}
 		}
 	}
 	

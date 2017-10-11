@@ -33,7 +33,7 @@ public void _Weapons_OnRoundStart() {
 	for(int i = 0; i < sizeof(g_iWeaponCD); i++) g_iWeaponCD[i] = 0; // Reset weapon cooldowns
 	
 	if(gH_WeapRespawn != null)
-		KillTimer(gH_WeapRespawn);
+		delete gH_WeapRespawn;
 }
 
 public Action WeaponCanUse(int client, int weapon) {
@@ -117,6 +117,9 @@ public void OnPostThinkPost(int client) {
 }
 
 public Action OnWeaponDrop(int client, int weapon) {
+	if(!IsValidClient(client))
+		return Plugin_Handled;
+	
 	char sBuffer[64];
 	char sGun[64];
 	
@@ -125,10 +128,12 @@ public Action OnWeaponDrop(int client, int weapon) {
 	
 	if(StrEqual(sBuffer, sGun, false)) { // initialize respawn
 		if(gH_WeapRespawn != null)
-			KillTimer(gH_WeapRespawn);
+			delete gH_WeapRespawn;
 		
 		gH_WeapRespawn = CreateTimer(gc_iDroppedWeapon.FloatValue, WeaponRespawner);
 	}
+	
+	return Plugin_Continue;
 }
 
 public void DropWeapon(int client, int weapon) {
@@ -137,7 +142,7 @@ public void DropWeapon(int client, int weapon) {
 		CS_DropWeapon(client, weapon, true, true);
 		
 		if(gH_WeapRespawn != null)
-			KillTimer(gH_WeapRespawn);
+			delete gH_WeapRespawn;
 			
 		gH_WeapRespawn = CreateTimer(gc_iDroppedWeapon.FloatValue, WeaponRespawner);
 	}
