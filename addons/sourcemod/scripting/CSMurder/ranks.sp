@@ -24,10 +24,11 @@ public void _Ranks_CVars() {
 }
 
 public void _Ranks_OnPluginStart() {
-	RegConsoleCmd("sm_playtime", Command_Playtime);
+	if(gc_bRanks.IntValue == 1)
+		RegConsoleCmd("sm_rank", Command_Rank);
 }
 
-public Action Command_Playtime(int client, int args) {
+public Action Command_Rank(int client, int args) {
 	if(!IsValidClient(client, _, true))
 		return Plugin_Handled;
 	
@@ -35,16 +36,14 @@ public Action Command_Playtime(int client, int args) {
 		TODO
 		Make it days, hours, minutes
 	*/
-	UpdateClientPlaytime(client);
-	int iPlaytime = SQL_GetUserPlaytime(client);
 	
-	CPrintToChat(client, "%s %t", g_sPrefix, "User Playtime", iPlaytime);
+	char rank[32];
+	SQL_GetUserRank(client, rank, sizeof(rank));
+	
+	CPrintToChat(client, "%s %t", g_sPrefix, "User Rank", rank);
+	CPrintToChat(client, "%s %t", g_sPrefix, "User Playtime", SQL_GetUserPlaytime(client));
 	
 	return Plugin_Handled;
-}
-
-public void _Ranks_OnRoundEnd() { // Update playtimes
-	for(int i = 1; i <= MaxClients; i++) if(IsValidClient(i, _, true)) UpdateClientPlaytime(i);
 }
 
 public void _Ranks_OnMapStart() {

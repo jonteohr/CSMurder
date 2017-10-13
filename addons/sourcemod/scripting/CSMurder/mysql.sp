@@ -17,38 +17,46 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Handle gH_Db;
+Database gH_Db;
+
+public void SQL_OnMapEnd() {
+	delete gH_Db;
+}
 
 public void _MySQL_OnPluginStart() {
 	char sErrorBuff[128];
-	char sQuery[128];
+	char sQuery[255];
 	
 	gH_Db = SQL_Connect("csmurder", true, sErrorBuff, sizeof(sErrorBuff));
-	Format(sQuery, sizeof(sQuery), "CREATE TABLE IF NOT EXISTS csmurder (ID int NOT NULL AUTO_INCREMENT, SteamID varchar(128) NOT NULL, Playtime int, Rank varchar(128), PRIMARY KEY (ID));");
 	
 	if(gH_Db != null) { // Successfully initialized MySQL connection
 		
-		Handle SQL = SQL_Query(gH_Db, sQuery); // Send the actual query
-		CloseHandle(SQL);
+		Format(sQuery, sizeof(sQuery), "CREATE TABLE IF NOT EXISTS csmurder (ID int NOT NULL AUTO_INCREMENT, SteamID varchar(128) NOT NULL, JoinDate int, Rank varchar(128), PRIMARY KEY (ID));");
+		
+		if(!SQL_FastQuery(gH_Db, sQuery)) {
+			char err[255];
+			SQL_GetError(gH_Db, err, sizeof(err));
+			PrintToServer("error: %s", err);
+		}
 		
 	} else { // Couldn't connect to MySQL
-		PrintToServer("Couldn't connect to CSMurder Database: %s", sErrorBuff);
+		PrintToServer("### Couldn't connect to CSMurder Database: %s ###", sErrorBuff);
 	}
 }
 
 public bool SQL_IsUserInTable(int client) {
 	char SteamID[64];
-	char sQuery[128];
+	char sQuery[255];
 	
 	GetClientAuthId(client, AuthId_Steam2, SteamID, sizeof(SteamID));
 	
 	Format(sQuery, sizeof(sQuery), "SELECT * FROM csmurder WHERE SteamID LIKE '%s'", SteamID);
 	
-	Handle SQL = SQL_Query(gH_Db, sQuery);
-	if(SQL != null) {
+	DBResultSet SQL = SQL_Query(gH_Db, sQuery);
+	
+	if(SQL != null)
 		if(SQL_FetchRow(SQL))
 			return true;
-	}
 	
 	CloseHandle(SQL);
 	
@@ -57,28 +65,33 @@ public bool SQL_IsUserInTable(int client) {
 
 public void SQL_AddUserToTable(int client) {
 	char SteamID[64];
-	char sQuery[128];
+	char sQuery[255];
 	GetClientAuthId(client, AuthId_Steam2, SteamID, sizeof(SteamID));
 	
-	Format(sQuery, sizeof(sQuery), "INSERT INTO csmurder (SteamID, Playtime, Rank) VALUES ('%s', 0, 'Newbie');", SteamID);
+	Format(sQuery, sizeof(sQuery), "INSERT INTO csmurder (SteamID, Playtime, Rank) VALUES ('%s', '%d', 'Newbie');", SteamID, GetTime());
 	
-	SQL_Query(gH_Db, sQuery);
+	if(!SQL_FastQuery(gH_Db, sQuery)) {
+		char err[255];
+		SQL_GetError(gH_Db, err, sizeof(err));
+		PrintToServer("Error: %s", err);
+	}
 }
 
 public int SQL_GetUserPlaytime(int client) {
 	int iPlayTime;
+	int JoinDate;
 	char SteamID[64];
-	char sQuery[128];
+	char sQuery[255];
 	
 	GetClientAuthId(client, AuthId_Steam2, SteamID, sizeof(SteamID));
 	
 	Format(sQuery, sizeof(sQuery), "SELECT PlayTime FROM csmurder WHERE SteamID LIKE '%s'", SteamID);
 	
-	Handle SQL = SQL_Query(gH_Db, sQuery);
+	DBResultSet SQL = SQL_Query(gH_Db, sQuery);
 	if(SQL != null) {
 		if(SQL_FetchRow(SQL)) {
-			iPlayTime = SQL_FetchInt(SQL, 0);
-			
+			JoinDate = SQL_FetchInt(SQL, 0);
+			iPlayTime = (GetTime() - JoinDate);
 			return iPlayTime;
 		}
 	}
@@ -88,13 +101,19 @@ public int SQL_GetUserPlaytime(int client) {
 	return false; // something went wrong
 }
 
-public void SQL_SetUserPlaytime(int client, int playtime) {
+public void SQL_GetUserRank(int client, char[] buffer, int maxlen) {
 	char SteamID[64];
-	char sQuery[128];
+	char sQuery[255];
 	
 	GetClientAuthId(client, AuthId_Steam2, SteamID, sizeof(SteamID));
 	
-	Format(sQuery, sizeof(sQuery), "UPDATE csmurder SET Playtime = %d WHERE SteamID LIKE '%s'", playtime, SteamID);
+	Format(sQuery, sizeof(sQuery), "SELECT rank FROM csmurder WHERE SteamID LIKE '%s'", SteamID);
 	
-	SQL_Query(gH_Db, sQuery);
+	DBResultSet SQL = SQL_Query(gH_Db, sQuery);
+	
+	if(SQL != null)
+		if(SQL_FetchRow(SQL))
+			SQL_FetchString(SQL, 0, buffer, maxlen);
+			
+	CloseHandle(SQL);
 }

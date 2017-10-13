@@ -35,7 +35,7 @@
 #pragma newdecls required
 
 // Global defs
-#define	PLUGIN_VERSION				"Beta 0.3.5a"
+#define	PLUGIN_VERSION				"Beta 0.3.6"
 #define	SERVERTAG					"Murder"
 #define	UPDATE_URL					"http://csmurder.net/updater/updater.txt"
 
@@ -66,6 +66,9 @@ ConVar gc_bMinPlayers;
 ConVar gc_iMinPlayers;
 ConVar gc_iBlind;
 ConVar gc_iDroppedWeapon;
+ConVar gc_bRanks;
+ConVar gc_bChatRanks;
+ConVar gc_bClanRanks;
 
 // Handles
 Handle gF_OnMurdererCreated;
@@ -73,20 +76,22 @@ Handle gF_OnDetectiveCreated;
 Handle gH_WeapRespawn;
 
 // Modules
-#include "CSMurder/roles.sp"
-#include "CSMurder/natives.sp"
-#include "CSMurder/roundsettings.sp"
-#include "CSMurder/overlays.sp"
-#include "CSMurder/deaths.sp"
-#include "CSMurder/weapons.sp"
-#include "CSMurder/sounds.sp"
-#include "CSMurder/colors.sp"
-#include "CSMurder/tags.sp"
-#include "CSMurder/rdmprevention.sp"
-#include "CSMurder/adminmenu.sp"
-#include "CSMurder/names.sp"
-#include "CSMurder/smoke.sp"
-#include "CSMurder/players.sp"
+#include "csmurder/roles.sp"
+#include "csmurder/natives.sp"
+#include "csmurder/roundsettings.sp"
+#include "csmurder/overlays.sp"
+#include "csmurder/deaths.sp"
+#include "csmurder/weapons.sp"
+#include "csmurder/sounds.sp"
+#include "csmurder/colors.sp"
+#include "csmurder/tags.sp"
+#include "csmurder/rdmprevention.sp"
+#include "csmurder/adminmenu.sp"
+#include "csmurder/names.sp"
+#include "csmurder/smoke.sp"
+#include "csmurder/players.sp"
+#include "csmurder/mysql.sp"
+#include "csmurder/ranks.sp"
 
 public Plugin myinfo = {
 	name = "[CS:GO] Murder",
@@ -137,6 +142,7 @@ public void OnPluginStart() {
 	_RDM_CVars();
 	_Players_CVars();
 	_Names_CVars();
+	_Ranks_CVars();
 	_Deaths_CVars();
 	_Tags_CVars();
 	_Settings_CVars();
@@ -145,8 +151,10 @@ public void OnPluginStart() {
 	AutoExecConfig_ExecuteFile(); // Execute the config
 	AutoExecConfig_CleanFile(); // Clean the config from spaces etc.
 	
+	_MySQL_OnPluginStart();
 	_Overlay_OnPluginStart();
 	_Tags_OnPluginStart();
+	_Ranks_OnPluginStart();
 	
 	/* Setting chat Prefix */
 	char sPrefix[64];
@@ -184,6 +192,7 @@ public void OnMapStart() {
 	_RDM_OnMapStart();
 	_Smoke_OnMapStart();
 	_Players_OnMapStart();
+	_Ranks_OnMapStart();
 	
 	for(int i = 1; i <= MaxClients; i++) {
 		if(!IsValidClient(i))
@@ -194,10 +203,15 @@ public void OnMapStart() {
 	}
 }
 
+public void OnMapEnd() {
+	SQL_OnMapEnd();
+}
+
 public void OnClientPutInServer(int client) {
 	SDKHook(client, SDKHook_OnTakeDamage, OnTakeDamage);
 	SDKHookEx(client, SDKHook_PostThinkPost, OnPostThinkPost);
 	_Players_ClientConnect(client);
+	_Ranks_OnClientPutInServer(client);
 }
 
 public void OnClientDisconnect(int client) {

@@ -249,21 +249,3 @@ stock void PerformBlind(int target, int amount) {
 		EndMessage();
 	}
 }
-
-/**
-* Updates the specified clients' playtime
-*
-* @param client			Entity client index
-* @return				true if successful
-* @error				Client is not in the database
-*/
-stock bool UpdateClientPlaytime(int client) {
-	if(!SQL_IsUserInTable(client))
-		return false;
-	
-	int oldTime = SQL_GetUserPlaytime(client);
-	int newTime = (oldTime - GetTime());
-	SQL_SetUserPlaytime(client, newTime);
-	
-	return true;
-}
