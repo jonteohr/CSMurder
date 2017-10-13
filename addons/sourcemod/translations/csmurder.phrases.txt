@@ -106,4 +106,11 @@
 		"en"	"The {darkblue}bystanders{default} win!"
 		"sv"	"{darkblue}Åskådarna{default} vann!"
 	}
+	
+	"User Playtime"
+	{
+		"#format"	"{1:d}"
+		"en"	"You have played for a total of {1} seconds."
+		"sv"	"Du har spelat i totalt {1} sekunder."
+	}
 }
