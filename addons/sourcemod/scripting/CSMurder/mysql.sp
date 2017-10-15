@@ -20,7 +20,7 @@
 Database gH_Db;
 
 public void SQL_OnMapEnd() {
-	delete gH_Db;
+	delete gH_Db; // Close the connection
 }
 
 public void _MySQL_OnPluginStart() {
@@ -77,8 +77,7 @@ public void SQL_AddUserToTable(int client) {
 	}
 }
 
-public int SQL_GetUserPlaytime(int client) {
-	int iPlayTime;
+public int SQL_GetUserJoinDate(int client) {
 	int JoinDate;
 	char SteamID[64];
 	char sQuery[255];
@@ -91,8 +90,7 @@ public int SQL_GetUserPlaytime(int client) {
 	if(SQL != null) {
 		if(SQL_FetchRow(SQL)) {
 			JoinDate = SQL_FetchInt(SQL, 0);
-			iPlayTime = (GetTime() - JoinDate);
-			return iPlayTime;
+			return JoinDate;
 		}
 	}
 	

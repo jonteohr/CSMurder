@@ -32,16 +32,17 @@ public Action Command_Rank(int client, int args) {
 	if(!IsValidClient(client, _, true))
 		return Plugin_Handled;
 	
-	/*
-		TODO
-		Make it days, hours, minutes
-	*/
+	int total = RoundToNearest(GetClientTime(client));
+	
+	int hours = (total / 3600)%24;
+	int minutes = (total / 60)%60;
+	int seconds = total%60;
 	
 	char rank[32];
 	SQL_GetUserRank(client, rank, sizeof(rank));
 	
 	CPrintToChat(client, "%s %t", g_sPrefix, "User Rank", rank);
-	CPrintToChat(client, "%s %t", g_sPrefix, "User Playtime", SQL_GetUserPlaytime(client));
+	CPrintToChat(client, "%s %t", g_sPrefix, "User Playtime", hours, minutes, seconds);
 	
 	return Plugin_Handled;
 }
