@@ -76,22 +76,22 @@ Handle gF_OnDetectiveCreated;
 Handle gH_WeapRespawn;
 
 // Modules
-#include "csmurder/roles.sp"
-#include "csmurder/natives.sp"
-#include "csmurder/roundsettings.sp"
-#include "csmurder/overlays.sp"
-#include "csmurder/deaths.sp"
-#include "csmurder/weapons.sp"
-#include "csmurder/sounds.sp"
-#include "csmurder/colors.sp"
-#include "csmurder/tags.sp"
-#include "csmurder/rdmprevention.sp"
-#include "csmurder/adminmenu.sp"
-#include "csmurder/names.sp"
-#include "csmurder/smoke.sp"
-#include "csmurder/players.sp"
-#include "csmurder/mysql.sp"
-#include "csmurder/levels.sp"
+#include "CSMurder/roles.sp"
+#include "CSMurder/natives.sp"
+#include "CSMurder/roundsettings.sp"
+#include "CSMurder/overlays.sp"
+#include "CSMurder/deaths.sp"
+#include "CSMurder/weapons.sp"
+#include "CSMurder/sounds.sp"
+#include "CSMurder/colors.sp"
+#include "CSMurder/tags.sp"
+#include "CSMurder/rdmprevention.sp"
+#include "CSMurder/adminmenu.sp"
+#include "CSMurder/names.sp"
+#include "CSMurder/smoke.sp"
+#include "CSMurder/players.sp"
+#include "CSMurder/mysql.sp"
+#include "CSMurder/levels.sp"
 
 public Plugin myinfo = {
 	name = "[CS:GO] Murder",
