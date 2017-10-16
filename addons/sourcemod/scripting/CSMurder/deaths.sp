@@ -72,6 +72,7 @@ public Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		attacker = victim;
 		damage *= 100.0;
 		_Smoke_OnPlayerDeath();
+		_Levels_OnPlayerKill();
 		
 		return Plugin_Changed;
 	}

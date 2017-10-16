@@ -18,7 +18,7 @@
  */
 
 // Strings
-char g_sNames[][12] = {
+char g_sNames[][26] = {
 	"Alfa",
 	"Bravo",
 	"Charlie",
@@ -30,10 +30,24 @@ char g_sNames[][12] = {
 	"India",
 	"Juliett",
 	"Kilo",
-	"Lima"
+	"Lima",
+	"Mike",
+	"November",
+	"Oscar",
+	"Papa",
+	"Quebec",
+	"Romeo",
+	"Sierra",
+	"Tango",
+	"Uniform",
+	"Victor",
+	"Whiskey",
+	"XRay",
+	"Yankee",
+	"Zulu"
 };
 
-char g_iNameTaken[12];
+char g_iNameTaken[26];
 
 public void _Names_CVars() {
 	gc_bNames = AutoExecConfig_CreateConVar("sm_murder_names", "1", "Set each players name to a random phonetic name?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
@@ -51,7 +65,7 @@ public void _Names_OnRoundStart() {
 }
 
 public void SetName(int client) {
-	int iName = GetRandomInt(0, 11);
+	int iName = GetRandomInt(0, 25);
 	
 	if(g_iNameTaken[iName] == 0) { // Name is not taken
 		g_iNameTaken[iName] = 1;

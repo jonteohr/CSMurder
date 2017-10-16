@@ -17,6 +17,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+int g_iMurderLevel;
+
 public void _Overlay_CVars() {
 	gc_sMurdererOverlay = AutoExecConfig_CreateConVar("sm_murder_overlay_murderer", "overlays/murder/murderer", "The path inside the /materials/ folder to the overlay for the murderer.\nDo no include file extensions!", FCVAR_NOTIFY);
 	gc_sDetectiveOverlay = AutoExecConfig_CreateConVar("sm_murder_overlay_detective", "overlays/murder/detective", "The path inside the /materials/ folder to the overlay for the detective.\nDo no include file extensions!", FCVAR_NOTIFY);
@@ -39,7 +41,7 @@ public void _Overlay_OnMapStart() {
 public void _Overlay_OnRoundStart() {
 	
 	CreateTimer(4.0, OverlayTimer);
-	
+	g_iMurderLevel = SQL_GetUserLevel(g_iMurderer);
 	for(int i = 1; i <= MaxClients; i++) {
 		if(!IsValidClient(i))
 			continue;
@@ -83,6 +85,9 @@ public Action HintTimer(Handle timer) {
 		if(g_iColor[i] == RED)
 			Format(sHex, sizeof(sHex), "#ff4d4d");
 		
+		if(IsMurderer(i)) // Murderer special hint
+			PrintHintText(i, "<font size='34' color='%s'><b>%s</b></font>\n<font color='#FE4040' size='18'>%t</font>", sHex, sName, "Murder Hint Level", g_iMurderLevel);
+			
 		PrintHintText(i, "<font size='34' color='%s'><b>%s</b></font>", sHex, sName);
 	}
 }

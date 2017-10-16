@@ -107,17 +107,24 @@
 		"sv"	"{darkblue}Åskådarna{default} vann!"
 	}
 	
-	"User Playtime"
-	{
-		"#format"	"{1:d},{2:d},{3:d}"
-		"en"	"You have played for a total of {1} hours, {2} minutes and {3} seconds."
-		"sv"	"Du har spelat i totalt {1} timmar, {2} minuter och {1} sekunder."
-	}
-	
-	"User Rank"
+	"User Level"
 	{
 		"#format"	"{1:s}"
-		"en"	"Your rank is: {1}"
-		"sv"	"Din rank är: {1}"
+		"en"	"Your murderer level is: {1}"
+		"sv"	"Din mördar-level är: {1}"
+	}
+	
+	"Level Up"
+	{
+		"#format"	"{1:d}"
+		"en"	"Your Murder-level has increased! You're now level {1}."
+		"sv"	"Din Mördar-level har ökat! Du är nu level {1}."
+	}
+	
+	"Murder Hint Level"
+	{
+		"#format"	"{1:d}"
+		"en"	"Level: {1}"
+		"sv"	"Level: {1}"
 	}
 }

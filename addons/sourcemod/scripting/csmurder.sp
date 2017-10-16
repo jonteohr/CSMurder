@@ -41,6 +41,7 @@
 
 // Integers
 int g_iPistol = -1;
+int g_iKills;
 
 // Strings
 char g_sPrefix[128];
@@ -66,9 +67,8 @@ ConVar gc_bMinPlayers;
 ConVar gc_iMinPlayers;
 ConVar gc_iBlind;
 ConVar gc_iDroppedWeapon;
-ConVar gc_bRanks;
-ConVar gc_bChatRanks;
-ConVar gc_bClanRanks;
+ConVar gc_bXray;
+ConVar gc_iXrayLvl;
 
 // Handles
 Handle gF_OnMurdererCreated;
@@ -91,7 +91,7 @@ Handle gH_WeapRespawn;
 #include "csmurder/smoke.sp"
 #include "csmurder/players.sp"
 #include "csmurder/mysql.sp"
-#include "csmurder/ranks.sp"
+#include "csmurder/levels.sp"
 
 public Plugin myinfo = {
 	name = "[CS:GO] Murder",
@@ -142,7 +142,7 @@ public void OnPluginStart() {
 	_RDM_CVars();
 	_Players_CVars();
 	_Names_CVars();
-	_Ranks_CVars();
+	_Levels_CVars();
 	_Deaths_CVars();
 	_Tags_CVars();
 	_Settings_CVars();
@@ -154,7 +154,7 @@ public void OnPluginStart() {
 	_MySQL_OnPluginStart();
 	_Overlay_OnPluginStart();
 	_Tags_OnPluginStart();
-	_Ranks_OnPluginStart();
+	_Levels_OnPluginStart();
 	
 	/* Setting chat Prefix */
 	char sPrefix[64];
@@ -192,7 +192,7 @@ public void OnMapStart() {
 	_RDM_OnMapStart();
 	_Smoke_OnMapStart();
 	_Players_OnMapStart();
-	_Ranks_OnMapStart();
+	_MySQL_OnMapStart();
 	
 	for(int i = 1; i <= MaxClients; i++) {
 		if(!IsValidClient(i))
@@ -211,7 +211,7 @@ public void OnClientPutInServer(int client) {
 	SDKHook(client, SDKHook_OnTakeDamage, OnTakeDamage);
 	SDKHookEx(client, SDKHook_PostThinkPost, OnPostThinkPost);
 	_Players_ClientConnect(client);
-	_Ranks_OnClientPutInServer(client);
+	_MySQL_OnClientPutInServer(client);
 }
 
 public void OnClientDisconnect(int client) {

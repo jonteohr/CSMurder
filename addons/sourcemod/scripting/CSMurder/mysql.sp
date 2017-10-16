@@ -31,7 +31,7 @@ public void _MySQL_OnPluginStart() {
 	
 	if(gH_Db != null) { // Successfully initialized MySQL connection
 		
-		Format(sQuery, sizeof(sQuery), "CREATE TABLE IF NOT EXISTS csmurder (ID int NOT NULL AUTO_INCREMENT, SteamID varchar(128) NOT NULL, JoinDate int, Rank varchar(128), PRIMARY KEY (ID));");
+		Format(sQuery, sizeof(sQuery), "CREATE TABLE IF NOT EXISTS csmurder (ID int NOT NULL AUTO_INCREMENT, SteamID varchar(128) NOT NULL, JoinDate int, MurderKills int, MurderLevel int, PRIMARY KEY (ID));");
 		
 		if(!SQL_FastQuery(gH_Db, sQuery)) {
 			char err[255];
@@ -68,7 +68,7 @@ public void SQL_AddUserToTable(int client) {
 	char sQuery[255];
 	GetClientAuthId(client, AuthId_Steam2, SteamID, sizeof(SteamID));
 	
-	Format(sQuery, sizeof(sQuery), "INSERT INTO csmurder (SteamID, Playtime, Rank) VALUES ('%s', '%d', 'Newbie');", SteamID, GetTime());
+	Format(sQuery, sizeof(sQuery), "INSERT INTO csmurder (SteamID, Playtime, MurderKills, MurderLevel) VALUES ('%s', '%d', '0', '0');", SteamID, GetTime());
 	
 	if(!SQL_FastQuery(gH_Db, sQuery)) {
 		char err[255];
@@ -99,19 +99,91 @@ public int SQL_GetUserJoinDate(int client) {
 	return false; // something went wrong
 }
 
-public void SQL_GetUserRank(int client, char[] buffer, int maxlen) {
+public int SQL_GetUserKills(int client) {
 	char SteamID[64];
 	char sQuery[255];
 	
+	int kills;
+	
 	GetClientAuthId(client, AuthId_Steam2, SteamID, sizeof(SteamID));
 	
-	Format(sQuery, sizeof(sQuery), "SELECT rank FROM csmurder WHERE SteamID LIKE '%s'", SteamID);
+	Format(sQuery, sizeof(sQuery), "SELECT MurderKills FROM csmurder WHERE SteamID LIKE '%s'", SteamID);
 	
 	DBResultSet SQL = SQL_Query(gH_Db, sQuery);
 	
 	if(SQL != null)
 		if(SQL_FetchRow(SQL))
-			SQL_FetchString(SQL, 0, buffer, maxlen);
+			kills = SQL_FetchInt(SQL, 0);
 			
 	CloseHandle(SQL);
+	
+	return kills;
+}
+
+public void SQL_SetUserKills(int client, int kills) {
+	char SteamID[64];
+	char sQuery[255];
+	GetClientAuthId(client, AuthId_Steam2, SteamID, sizeof(SteamID));
+	
+	Format(sQuery, sizeof(sQuery), "UPDATE csmurder SET MurderKills = '%d' WHERE SteamID LIKE '%s';", kills, SteamID);
+	
+	if(!SQL_FastQuery(gH_Db, sQuery)) {
+		char err[255];
+		SQL_GetError(gH_Db, err, sizeof(err));
+		PrintToServer("Error: %s", err);
+	}
+}
+
+public int SQL_GetUserLevel(int client) {
+	char SteamID[64];
+	char sQuery[255];
+	
+	int level;
+	
+	GetClientAuthId(client, AuthId_Steam2, SteamID, sizeof(SteamID));
+	Format(sQuery, sizeof(sQuery), "SELECT MurderLevel FROM csmurder WHERE SteamID LIKE '%s'", SteamID);
+	
+	DBResultSet SQL = SQL_Query(gH_Db, sQuery);
+	if(SQL != null)
+		if(SQL_FetchRow(SQL))
+			level = SQL_FetchInt(SQL, 0);
+	CloseHandle(SQL);
+	
+	return level;
+}
+
+public void SQL_SetUserLevel(int client, int level) {
+	char SteamID[64];
+	char sQuery[255];
+	GetClientAuthId(client, AuthId_Steam2, SteamID, sizeof(SteamID));
+	
+	Format(sQuery, sizeof(sQuery), "UPDATE csmurder SET MurderLevel = '%d' WHERE SteamID LIKE '%s';", level, SteamID);
+	if(!SQL_FastQuery(gH_Db, sQuery)) {
+		char err[255];
+		SQL_GetError(gH_Db, err, sizeof(err));
+		PrintToServer("Error: %s", err);
+	}
+}
+
+
+
+///////////////////////////////////
+//
+//			IMPLEMENTATIONS
+//
+///////////////////////////////////
+public void _MySQL_OnMapStart() {
+	for(int i = 1; i <= MaxClients; i++) {
+		if(!IsValidClient(i, _, true))
+			continue;
+		
+		if(!SQL_IsUserInTable(i)) // Add user to DB if not exists
+			SQL_AddUserToTable(i);
+	}
+}
+
+public void _MySQL_OnClientPutInServer(int client) {
+	if(IsValidClient(client, _, true))
+		if(!SQL_IsUserInTable(client))
+			SQL_AddUserToTable(client);
 }
