@@ -1,7 +1,7 @@
 ## 0.3.6
  - Added MySQL database implementation.
  - Added Murderer levels, each level giving a special feature.
-  - Added X-Ray (basically wallhack) for the murderer at level 1.
+   - Added X-Ray (basically wallhack) for the murderer at level 1.
 
 ## 0.3.5a
  - Fixed issues that made the previous version completely unplayable.
