@@ -39,6 +39,13 @@ public Action Command_Level(int client, int args) {
 
 public void _Levels_OnRoundStart() {
 	g_iKills = 0;
+	
+	if(IsValidClient(g_iMurderer)) { // Enable features!
+		if(gc_bXray.IntValue == 1) { // XRay feature
+			if(SQL_GetUserLevel(g_iMurderer) >= gc_iXrayLvl.IntValue)
+				MurderXray(g_iMurderer, true);
+		}
+	}
 }
 
 public void _Levels_OnPlayerKill() {
@@ -61,6 +68,10 @@ public void _Levels_OnRoundEnd() {
 		SQL_SetUserLevel(g_iMurderer, 3);
 		CPrintToChat(g_iMurderer, "%s %t", g_sPrefix, "Level Up", SQL_GetUserLevel(g_iMurderer));
 	}
+	
+	/*	RESET FEATURES	*/
+	if(gc_bXray.IntValue == 1)
+		MurderXray(g_iMurderer, false);
 }
 
 public void MurderXray(int client, bool state) {
