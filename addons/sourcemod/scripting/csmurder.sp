@@ -237,6 +237,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast) {
 	_Players_OnRoundStart();
 	_Settings_OnRoundStart();
 	_Deaths_OnRoundStart();
+	_Levels_OnRoundStart();
 	
 	for(int i = 1; i <= MaxClients; i++) { // Get online players count
 		if(!IsValidClient(i))
@@ -269,6 +270,7 @@ public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast) {
 	}
 	
 	_Smoke_OnRoundEnd();
+	_Levels_OnRoundEnd();
 }
 
 public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast) {

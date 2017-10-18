@@ -1,4 +1,4 @@
-"Phrases"
+﻿"Phrases"
 {
 	"Murderer Killed"
 	{
@@ -109,7 +109,7 @@
 	
 	"User Level"
 	{
-		"#format"	"{1:s}"
+		"#format"	"{1:d}"
 		"en"	"Your murderer level is: {1}"
 		"sv"	"Din mördar-level är: {1}"
 	}

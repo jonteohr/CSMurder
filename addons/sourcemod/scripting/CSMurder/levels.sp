@@ -57,14 +57,15 @@ public void _Levels_OnRoundEnd() {
 	SQL_SetUserKills(g_iMurderer, (prevKills + g_iKills));
 	
 	int curKills = SQL_GetUserKills(g_iMurderer);
+	int level = SQL_GetUserLevel(g_iMurderer);
 	
-	if(curKills >= 5) { // Level up!
+	if(curKills >= 5 && level < 1) { // Level up!
 		SQL_SetUserLevel(g_iMurderer, 1);
 		CPrintToChat(g_iMurderer, "%s %t", g_sPrefix, "Level Up", SQL_GetUserLevel(g_iMurderer));
-	} else if(curKills >= 10) {
+	} else if(curKills >= 10 && level < 2) {
 		SQL_SetUserLevel(g_iMurderer, 2);
 		CPrintToChat(g_iMurderer, "%s %t", g_sPrefix, "Level Up", SQL_GetUserLevel(g_iMurderer));
-	} else if(curKills >= 20) {
+	} else if(curKills >= 20 && level < 3) {
 		SQL_SetUserLevel(g_iMurderer, 3);
 		CPrintToChat(g_iMurderer, "%s %t", g_sPrefix, "Level Up", SQL_GetUserLevel(g_iMurderer));
 	}

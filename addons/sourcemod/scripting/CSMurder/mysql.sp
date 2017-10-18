@@ -68,7 +68,7 @@ public void SQL_AddUserToTable(int client) {
 	char sQuery[255];
 	GetClientAuthId(client, AuthId_Steam2, SteamID, sizeof(SteamID));
 	
-	Format(sQuery, sizeof(sQuery), "INSERT INTO csmurder (SteamID, Playtime, MurderKills, MurderLevel) VALUES ('%s', '%d', '0', '0');", SteamID, GetTime());
+	Format(sQuery, sizeof(sQuery), "INSERT INTO csmurder (SteamID, JoinDate, MurderKills, MurderLevel) VALUES ('%s', '%d', '0', '0');", SteamID, GetTime());
 	
 	if(!SQL_FastQuery(gH_Db, sQuery)) {
 		char err[255];
@@ -84,7 +84,7 @@ public int SQL_GetUserJoinDate(int client) {
 	
 	GetClientAuthId(client, AuthId_Steam2, SteamID, sizeof(SteamID));
 	
-	Format(sQuery, sizeof(sQuery), "SELECT PlayTime FROM csmurder WHERE SteamID LIKE '%s'", SteamID);
+	Format(sQuery, sizeof(sQuery), "SELECT JoinDate FROM csmurder WHERE SteamID LIKE '%s'", SteamID);
 	
 	DBResultSet SQL = SQL_Query(gH_Db, sQuery);
 	if(SQL != null) {
