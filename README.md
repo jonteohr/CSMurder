@@ -1,4 +1,4 @@
-# CS-Murder [![Build Status](https://img.shields.io/travis/USER/REPO.svg?style=flat-square)](https://travis-ci.org/condolent/CSMurder) [![Discord](https://img.shields.io/badge/Discord-Join%20chat%20%E2%86%92-738bd7.svg?style=flat-square)](https://discord.gg/UcXacWk)
+# CS-Murder [![Build Status](https://img.shields.io/travis/condolent/CSMurder.svg?style=flat-square)](https://travis-ci.org/condolent/CSMurder) [![Discord](https://img.shields.io/badge/Discord-Join%20chat%20%E2%86%92-738bd7.svg?style=flat-square)](https://discord.gg/UcXacWk)
 A CS:GO version of Mechanical Mind's GMOD Murder
 
 ## To-Do
