@@ -2,8 +2,8 @@
 A CS:GO version of Mechanical Mind's GMOD Murder
 
 ## To-Do
-- Make murderer be able to see foot patterns from other players
-- Make bystanders destroy windows by pressing E
+- Make murderer able to see footprints from bystanders
+- Allow bystanders to destroy windows by pressing E
 
 ## Known issues
 - Bystanders very rarerly spawn without a decoy
